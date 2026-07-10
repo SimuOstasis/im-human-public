@@ -1,0 +1,126 @@
+{
+  "_version": "1.0",
+  "_comment": "3 preset human profiles for im-human simulator",
+  "presets": [
+    {
+      "profile_id": "young_healthy_30m",
+      "display_name": "Молодой здоровый 30M",
+      "demographics": {
+        "sex": "male",
+        "age": 30,
+        "height_cm": 178.0,
+        "weight_kg": 75.0
+      },
+      "physiology": {
+        "body_fat_pct": 15.0,
+        "metabolic_rate_coef": 1.05,
+        "methylation": "normal",
+        "autophagy_efficiency": "normal"
+      },
+      "lifestyle": {
+        "stress": 25,
+        "sleep_quality": 75,
+        "physical_activity": "moderate",
+        "diet_quality": 70,
+        "alcohol": 10,
+        "smoking": "none"
+      },
+      "predispositions": {
+        "cardiovascular_risk": 0.10,
+        "diabetes_risk": 0.08,
+        "neurodegeneration_risk": 0.05,
+        "liver_disease_risk": 0.05,
+        "kidney_disease_risk": 0.05
+      },
+      "organ_systems": {
+        "cardiovascular": 0.95,
+        "liver": 0.95,
+        "kidney": 0.95,
+        "nervous": 0.95,
+        "immune": 0.90,
+        "metabolic": 0.95,
+        "cellular_repair": 0.92
+      }
+    },
+    {
+      "profile_id": "middle_age_50f",
+      "display_name": "Средний возраст 50F",
+      "demographics": {
+        "sex": "female",
+        "age": 50,
+        "height_cm": 165.0,
+        "weight_kg": 70.0
+      },
+      "physiology": {
+        "body_fat_pct": 30.0,
+        "metabolic_rate_coef": 0.95,
+        "methylation": "normal",
+        "autophagy_efficiency": "low"
+      },
+      "lifestyle": {
+        "stress": 45,
+        "sleep_quality": 60,
+        "physical_activity": "low",
+        "diet_quality": 60,
+        "alcohol": 15,
+        "smoking": "none"
+      },
+      "predispositions": {
+        "cardiovascular_risk": 0.25,
+        "diabetes_risk": 0.20,
+        "neurodegeneration_risk": 0.15,
+        "liver_disease_risk": 0.10,
+        "kidney_disease_risk": 0.10
+      },
+      "organ_systems": {
+        "cardiovascular": 0.75,
+        "liver": 0.80,
+        "kidney": 0.82,
+        "nervous": 0.78,
+        "immune": 0.72,
+        "metabolic": 0.70,
+        "cellular_repair": 0.68
+      }
+    },
+    {
+      "profile_id": "elderly_70m",
+      "display_name": "Пожилой 70M",
+      "demographics": {
+        "sex": "male",
+        "age": 70,
+        "height_cm": 172.0,
+        "weight_kg": 80.0
+      },
+      "physiology": {
+        "body_fat_pct": 28.0,
+        "metabolic_rate_coef": 0.85,
+        "methylation": "slow",
+        "autophagy_efficiency": "low"
+      },
+      "lifestyle": {
+        "stress": 35,
+        "sleep_quality": 50,
+        "physical_activity": "sedentary",
+        "diet_quality": 55,
+        "alcohol": 20,
+        "smoking": "former"
+      },
+      "predispositions": {
+        "cardiovascular_risk": 0.45,
+        "diabetes_risk": 0.35,
+        "neurodegeneration_risk": 0.30,
+        "liver_disease_risk": 0.20,
+        "kidney_disease_risk": 0.25
+      },
+      "organ_systems": {
+        "cardiovascular": 0.58,
+        "liver": 0.65,
+        "kidney": 0.60,
+        "nervous": 0.62,
+        "immune": 0.55,
+        "metabolic": 0.55,
+        "cellular_repair": 0.50
+      }
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" font-family="Segoe UI, Arial, sans-serif" role="img" aria-label="Как работает im-human: выбираем человека, добавляем вещества, перематываем время, смотрим на биомаркеры">
+  <!-- Card background so it is readable on light and dark GitHub themes -->
+  <rect x="0" y="0" width="960" height="440" rx="24" fill="#f4f7fb"/>
+  <text x="480" y="46" text-anchor="middle" font-size="26" font-weight="700" fill="#1c2b3a">Как работает im-human — за 4 шага</text>
+
+  <!-- Arrows connecting the 4 steps -->
+  <g stroke="#9db4c9" stroke-width="4" fill="none" stroke-linecap="round">
+    <path d="M232 230 H258"/>
+    <path d="M472 230 H498"/>
+    <path d="M712 230 H738"/>
+  </g>
+  <g fill="#9db4c9">
+    <path d="M262 230 l-12 -7 v14 z"/>
+    <path d="M502 230 l-12 -7 v14 z"/>
+    <path d="M742 230 l-12 -7 v14 z"/>
+  </g>
+
+  <!-- Step 1: choose a person -->
+  <g>
+    <rect x="32" y="92" width="200" height="276" rx="18" fill="#ffffff" stroke="#d6e0ea" stroke-width="2"/>
+    <circle cx="132" cy="176" r="30" fill="#ffd8a8"/>
+    <rect x="102" y="212" width="60" height="66" rx="22" fill="#4dabf7"/>
+    <text x="132" y="316" text-anchor="middle" font-size="18" font-weight="700" fill="#1c2b3a">1. Человек</text>
+    <text x="132" y="340" text-anchor="middle" font-size="13" fill="#5b6b7b">возраст, пол,</text>
+    <text x="132" y="356" text-anchor="middle" font-size="13" fill="#5b6b7b">вес, привычки</text>
+  </g>
+
+  <!-- Step 2: add substances (drops/pills) -->
+  <g>
+    <rect x="272" y="92" width="200" height="276" rx="18" fill="#ffffff" stroke="#d6e0ea" stroke-width="2"/>
+    <path d="M352 150 c-22 26 -34 42 -34 60 a34 34 0 0 0 68 0 c0 -18 -12 -34 -34 -60 z" fill="#63e6be"/>
+    <ellipse cx="404" cy="196" rx="24" ry="15" fill="#f783ac"/>
+    <rect x="392" y="182" width="24" height="28" rx="12" fill="#e64980" opacity="0.35"/>
+    <text x="372" y="316" text-anchor="middle" font-size="18" font-weight="700" fill="#1c2b3a">2. Вещества</text>
+    <text x="372" y="340" text-anchor="middle" font-size="13" fill="#5b6b7b">витамины,</text>
+    <text x="372" y="356" text-anchor="middle" font-size="13" fill="#5b6b7b">добавки, лекарства</text>
+  </g>
+
+  <!-- Step 3: fast-forward time (clock) -->
+  <g>
+    <rect x="512" y="92" width="200" height="276" rx="18" fill="#ffffff" stroke="#d6e0ea" stroke-width="2"/>
+    <circle cx="612" cy="186" r="44" fill="#fff3bf" stroke="#f59f00" stroke-width="4"/>
+    <line x1="612" y1="186" x2="612" y2="156" stroke="#e67700" stroke-width="4" stroke-linecap="round"/>
+    <line x1="612" y1="186" x2="634" y2="196" stroke="#e67700" stroke-width="4" stroke-linecap="round"/>
+    <text x="612" y="262" text-anchor="middle" font-size="13" font-weight="700" fill="#e67700">×1 ×10 ×100 ×1000</text>
+    <text x="612" y="316" text-anchor="middle" font-size="18" font-weight="700" fill="#1c2b3a">3. Время</text>
+    <text x="612" y="340" text-anchor="middle" font-size="13" fill="#5b6b7b">1 шаг = 1 час,</text>
+    <text x="612" y="356" text-anchor="middle" font-size="13" fill="#5b6b7b">можно перематывать</text>
+  </g>
+
+  <!-- Step 4: watch biomarkers (mini charts) -->
+  <g>
+    <rect x="752" y="92" width="200" height="276" rx="18" fill="#ffffff" stroke="#d6e0ea" stroke-width="2"/>
+    <rect x="776" y="140" width="152" height="96" rx="8" fill="#f1f3f5"/>
+    <polyline points="784,214 810,196 836,204 862,168 888,178 920,150" fill="none" stroke="#37b24d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline points="784,226 812,220 840,228 868,214 900,220 920,208" fill="none" stroke="#f03e3e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+    <text x="852" y="316" text-anchor="middle" font-size="18" font-weight="700" fill="#1c2b3a">4. Приборы</text>
+    <text x="852" y="340" text-anchor="middle" font-size="13" fill="#5b6b7b">24 биомаркера</text>
+    <text x="852" y="356" text-anchor="middle" font-size="13" fill="#5b6b7b">меняются на графиках</text>
+  </g>
+
+  <text x="480" y="410" text-anchor="middle" font-size="14" fill="#5b6b7b">Одинаковый старт → одинаковый результат: симуляция полностью повторяема (детерминизм).</text>
+</svg>

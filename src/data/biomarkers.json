@@ -1,0 +1,82 @@
+{
+  "_version": "1.0",
+  "_source": "Biomarkers_v1.txt",
+  "_comment": "24 MVP biomarkers for im-human simulator",
+
+  "categories": [
+    {"slug": "lipids",       "name": "Lipids"},
+    {"slug": "glucose",      "name": "Glucose Metabolism"},
+    {"slug": "inflammation", "name": "Inflammation"},
+    {"slug": "liver",        "name": "Liver Function"},
+    {"slug": "kidney",       "name": "Kidney Function"},
+    {"slug": "blood_count",  "name": "Blood Count"},
+    {"slug": "vitamins",     "name": "Vitamins & Nutrients"},
+    {"slug": "telemetry",    "name": "Physiological Telemetry"}
+  ],
+
+  "organs": [
+    {"slug": "cardiovascular",  "name": "Cardiovascular"},
+    {"slug": "liver",           "name": "Liver"},
+    {"slug": "kidney",          "name": "Kidneys"},
+    {"slug": "nervous",         "name": "Nervous System"},
+    {"slug": "immune",          "name": "Immune System"},
+    {"slug": "metabolic",       "name": "Metabolic System"},
+    {"slug": "cellular_repair", "name": "Cellular Repair"},
+    {"slug": "bone",            "name": "Bone System"},
+    {"slug": "muscle",          "name": "Muscle System"}
+  ],
+
+  "biomarkers": [
+    {"code": "ldlC",         "name": "LDL Cholesterol",    "name_ru": "Холестерин ЛПНП",       "category": "lipids",       "units": "mmol/L", "status": "Clinical",      "mvp": true,  "organs": ["cardiovascular"]},
+    {"code": "hdlC",         "name": "HDL Cholesterol",    "name_ru": "Холестерин ЛПВП",       "category": "lipids",       "units": "mmol/L", "status": "Clinical",      "mvp": true,  "organs": ["cardiovascular"]},
+    {"code": "triglycerides","name": "Triglycerides",      "name_ru": "Триглицериды",                    "category": "lipids",       "units": "mmol/L", "status": "Clinical",      "mvp": true,  "organs": ["cardiovascular", "metabolic"]},
+    {"code": "apoB",         "name": "Apolipoprotein B",   "name_ru": "Аполипопротеин B",     "category": "lipids",       "units": "g/L",    "status": "Extended",      "mvp": true,  "organs": ["cardiovascular"]},
+    {"code": "fastingGlucose","name": "Fasting Glucose",   "name_ru": "Глюкоза натощак",      "category": "glucose",      "units": "mmol/L", "status": "Clinical",      "mvp": true,  "organs": ["metabolic"]},
+    {"code": "fastingInsulin","name": "Fasting Insulin",   "name_ru": "Инсулин натощак",      "category": "glucose",      "units": "mcU/mL", "status": "Clinical",      "mvp": true,  "organs": ["metabolic"]},
+    {"code": "homaIr",       "name": "HOMA-IR",            "name_ru": "Индекс HOMA-IR",                                               "category": "glucose",      "units": "ratio",  "status": "Calculated",    "mvp": true,  "organs": ["metabolic"], "formula": "fastingInsulin * fastingGlucose / 22.5"},
+    {"code": "hba1c",        "name": "HbA1c",              "name_ru": "HbA1c",                                                                                     "category": "glucose",      "units": "%",      "status": "Clinical",      "mvp": true,  "organs": ["metabolic"]},
+    {"code": "hsCrp",        "name": "hs-CRP",             "name_ru": "Высокочувствительный СРБ", "category": "inflammation", "units": "mg/L", "status": "Clinical",    "mvp": true,  "organs": ["immune", "cardiovascular"]},
+    {"code": "il6",          "name": "Interleukin-6",      "name_ru": "Интерлейкин-6",                       "category": "inflammation", "units": "pg/mL",  "status": "Research",      "mvp": true,  "organs": ["immune"]},
+    {"code": "alt",          "name": "ALT",                "name_ru": "АЛТ",                                                                        "category": "liver",        "units": "U/L",    "status": "Clinical",      "mvp": true,  "organs": ["liver"]},
+    {"code": "ast",          "name": "AST",                "name_ru": "АСТ",                                                                        "category": "liver",        "units": "U/L",    "status": "Clinical",      "mvp": true,  "organs": ["liver"]},
+    {"code": "ggt",          "name": "GGT",                "name_ru": "ГГТ",                                                                        "category": "liver",        "units": "U/L",    "status": "Clinical",      "mvp": true,  "organs": ["liver"]},
+    {"code": "albumin",      "name": "Albumin",            "name_ru": "Альбумин",                                          "category": "liver",        "units": "g/L",    "status": "Clinical",      "mvp": true,  "organs": ["liver"]},
+    {"code": "creatinine",   "name": "Serum Creatinine",   "name_ru": "Креатинин",                                   "category": "kidney",       "units": "umol/L", "status": "Clinical",      "mvp": true,  "organs": ["kidney"]},
+    {"code": "egfr",         "name": "eGFR",               "name_ru": "Расчётная СКФ",                "category": "kidney",       "units": "mL/min/1.73m2", "status": "Calculated", "mvp": true, "organs": ["kidney"]},
+    {"code": "urineAlbuminCreatinineRatio", "name": "UACR", "name_ru": "UACR",                                                                                    "category": "kidney",       "units": "mg/g",   "status": "Clinical",      "mvp": true,  "organs": ["kidney"]},
+    {"code": "sodium",       "name": "Sodium",             "name_ru": "Натрий",                                                      "category": "kidney",       "units": "mmol/L", "status": "Clinical",      "mvp": true,  "organs": ["kidney"]},
+    {"code": "potassium",    "name": "Potassium",          "name_ru": "Калий",                                                            "category": "kidney",       "units": "mmol/L", "status": "Clinical",      "mvp": true,  "organs": ["kidney", "cardiovascular"]},
+    {"code": "hemoglobin",   "name": "Hemoglobin",         "name_ru": "Гемоглобин",                             "category": "blood_count",  "units": "g/L",    "status": "Clinical",      "mvp": true,  "organs": ["immune"]},
+    {"code": "vitaminD25Oh", "name": "25(OH)D",            "name_ru": "Витамин D",                                              "category": "vitamins",     "units": "ng/mL",  "status": "Clinical",      "mvp": true,  "organs": ["immune", "bone"]},
+    {"code": "systolicBloodPressure", "name": "Systolic BP", "name_ru": "Артериальное давление", "category": "telemetry", "units": "mmHg", "status": "Clinical", "mvp": true, "organs": ["cardiovascular"]},
+    {"code": "restingHeartRate", "name": "Resting Heart Rate", "name_ru": "Пульс покоя",                        "category": "telemetry",    "units": "bpm",    "status": "Clinical",      "mvp": true,  "organs": ["cardiovascular"]},
+    {"code": "hrvRmssd",     "name": "HRV RMSSD",          "name_ru": "HRV (RMSSD)",                                                                               "category": "telemetry",    "units": "ms",     "status": "Clinical",      "mvp": true,  "organs": ["cardiovascular", "nervous"]}
+  ],
+
+  "reference_ranges": {
+    "ldlC":          {"optimal": {"max": 2.6}, "borderline": {"min": 2.6, "max": 3.4}, "high_risk": {"min": 3.4}, "unit": "mmol/L"},
+    "hdlC":          {"optimal_m": {"min": 1.0}, "optimal_f": {"min": 1.3}, "high_risk": {"max": 1.0}, "unit": "mmol/L"},
+    "triglycerides": {"optimal": {"max": 1.7}, "borderline": {"min": 1.7, "max": 2.3}, "high_risk": {"min": 2.3}, "unit": "mmol/L"},
+    "apoB":          {"optimal": {"max": 0.9}, "high_risk": {"min": 1.2}, "unit": "g/L"},
+    "fastingGlucose":{"optimal": {"max": 5.5}, "borderline": {"min": 5.5, "max": 7.0}, "high_risk": {"min": 7.0}, "unit": "mmol/L"},
+    "fastingInsulin":{"optimal": {"max": 8.0}, "borderline": {"min": 8.0, "max": 15.0}, "high_risk": {"min": 15.0}, "unit": "mcU/mL"},
+    "homaIr":        {"optimal": {"max": 1.5}, "borderline": {"min": 1.5, "max": 2.5}, "high_risk": {"min": 2.5}},
+    "hba1c":         {"optimal": {"max": 5.7}, "borderline": {"min": 5.7, "max": 6.5}, "high_risk": {"min": 6.5}, "unit": "%"},
+    "hsCrp":         {"optimal": {"max": 1.0}, "borderline": {"min": 1.0, "max": 3.0}, "high_risk": {"min": 3.0}, "unit": "mg/L"},
+    "il6":           {"optimal": {"max": 3.4}, "high_risk": {"min": 7.0}, "unit": "pg/mL"},
+    "alt":           {"optimal_m": {"max": 35}, "optimal_f": {"max": 25}, "high_risk": {"min": 56}, "unit": "U/L"},
+    "ast":           {"optimal": {"max": 40}, "high_risk": {"min": 56}, "unit": "U/L"},
+    "ggt":           {"optimal_m": {"max": 50}, "optimal_f": {"max": 30}, "unit": "U/L"},
+    "albumin":       {"optimal": {"min": 40, "max": 55}, "high_risk": {"max": 35}, "unit": "g/L"},
+    "creatinine":    {"optimal_m": {"min": 62, "max": 115}, "optimal_f": {"min": 53, "max": 97}, "unit": "umol/L"},
+    "egfr":          {"optimal": {"min": 90}, "borderline": {"min": 60, "max": 90}, "high_risk": {"max": 60}, "unit": "mL/min/1.73m2"},
+    "urineAlbuminCreatinineRatio": {"optimal": {"max": 30}, "borderline": {"min": 30, "max": 300}, "high_risk": {"min": 300}, "unit": "mg/g"},
+    "sodium":        {"optimal": {"min": 136, "max": 145}, "unit": "mmol/L"},
+    "potassium":     {"optimal": {"min": 3.5, "max": 5.0}, "unit": "mmol/L"},
+    "hemoglobin":    {"optimal_m": {"min": 130, "max": 170}, "optimal_f": {"min": 120, "max": 155}, "unit": "g/L"},
+    "vitaminD25Oh":  {"optimal": {"min": 40, "max": 80}, "borderline": {"min": 20, "max": 40}, "high_risk": {"max": 20}, "unit": "ng/mL"},
+    "systolicBloodPressure": {"optimal": {"max": 120}, "borderline": {"min": 120, "max": 130}, "high_risk": {"min": 140}, "unit": "mmHg"},
+    "restingHeartRate": {"optimal": {"min": 50, "max": 70}, "borderline": {"min": 70, "max": 90}, "high_risk": {"min": 90}, "unit": "bpm"},
+    "hrvRmssd":      {"optimal": {"min": 50}, "borderline": {"min": 25, "max": 50}, "high_risk": {"max": 25}, "unit": "ms"}
+  }
+}
