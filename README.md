@@ -32,7 +32,7 @@ Copyright © 2026 Vladimir Bazhin. Contact: info@simuostasis.com
 
 ## 🧒 Описание принципов работы (простыми словами)
 
-*Этот раздел объясняет программу так, будто рассказываешь пятикласснику. Технические детали — ниже.*
+*Этот раздел объясняет программу так, будто рассказываешь ребенку. Технические детали — ниже.*
 
 ![Как работает im-human за 4 шага](Assets/how-it-works.svg)
 
@@ -307,7 +307,7 @@ Assets/            # Иллюстрации для документации
 ### Команды Neo4j
 
 ```powershell
-cd W:\Obsidian\human\.neo4j
+cd human\.neo4j
 
 # Проверить подключение
 .\venv\Scripts\python.exe check_connection.py
