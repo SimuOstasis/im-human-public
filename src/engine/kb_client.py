@@ -56,6 +56,8 @@ OPTIONAL MATCH (target)-[:LINKS_TO]-(neighbour:Page)
 WITH target, collect(neighbour) + [target] AS pages
 UNWIND pages AS p
 MATCH (f:Fact)-[:FACT_OF]->(p)
+WHERE f.si >= 0.5
+OPTIONAL MATCH (f)-[:FROM_SOURCE]->(s:Source)
 RETURN DISTINCT
        f.subject    AS subject,
        f.predicate  AS predicate,
@@ -63,7 +65,8 @@ RETURN DISTINCT
        f.si         AS si,
        f.wi         AS wi,
        f.importance AS importance,
-       p.slug AS source_page
+       p.slug AS source_page,
+       collect(DISTINCT {url: s.url_or_doi, title: s.title}) AS sources
 ORDER BY f.wi DESC, f.si DESC
 """
 
@@ -123,7 +126,7 @@ class KBClient:
         user = os.environ.get("NEO4J_USER", "neo4j")
         password = os.environ.get("NEO4J_PASSWORD", "")
         self._human_db = os.environ.get("NEO4J_DATABASE", "Human")
-        self._mortality_db = os.environ.get("MORTALITY_DATABASE", "Mortality")
+        self._mortality_db = os.environ.get("MORTALITY_NEO4J_DATABASE", "Mortality")
         # Lazy import neo4j (driver инициализирует thread pool при импорте)
         from neo4j import GraphDatabase  # noqa: PLC0415
         # Один driver — два database через session(database=)
@@ -190,10 +193,10 @@ class KBClient:
         Returns:
             list[dict] с ключами subject/predicate/object/si/wi/importance/source_page
         """
-        slug = self._get_mortality_slug_substance(substance_id)
-        if not slug:
-            return []
         try:
+            slug = self._get_mortality_slug_substance(substance_id)
+            if not slug:
+                return []
             return self._query_facts(slug)
         except Exception:
             return []
@@ -205,16 +208,22 @@ class KBClient:
 
         Graceful degradation (D-11): slug отсутствует или DB недоступна → []
 
+        IN-03 (13-REVIEW.md): реализовано и покрыто тестами (KB-03,
+        test_kb_client.py::test_get_biomarker_context), но пока не вызывается
+        ни из одного UI-пути — намеренно staged раньше своего потребителя
+        (планируемая панель деталей биомаркера, будущая фаза). Не удалять как
+        "мёртвый код" без проверки ROADMAP.
+
         Args:
             biomarker_code: внутренний код биомаркера (напр. "ldlC")
 
         Returns:
             list[dict] с ключами subject/predicate/object/si/wi/importance/source_page
         """
-        slug = self._get_mortality_slug_biomarker(biomarker_code)
-        if not slug:
-            return []
         try:
+            slug = self._get_mortality_slug_biomarker(biomarker_code)
+            if not slug:
+                return []
             return self._query_facts(slug)
         except Exception:
             return []
@@ -233,17 +242,18 @@ class KBClient:
         """
         if not facts:
             return 1
-        # Используем _compute_avg_si — единую точку вычисления (WR-02)
-        avg_si = _compute_avg_si(facts)
-        # avg_si == 0.0 когда все si=None → _compute_avg_si вернул 0.0 (нет данных)
+        # D-06: Используем _compute_weighted_si — единую точку вычисления (WR-02),
+        # взвешенную по importance (Critical=3/Major=2/Minor=1), а не плоское среднее
+        weighted_si = _compute_weighted_si(facts)
+        # weighted_si == 0.0 когда все si=None → _compute_weighted_si вернул 0.0 (нет данных)
         # < 0.2 перехватывает этот случай и возвращает уровень 1
-        if avg_si < 0.2:
+        if weighted_si < 0.2:
             return 1
-        if avg_si < 0.4:
+        if weighted_si < 0.4:
             return 2
-        if avg_si < 0.6:
+        if weighted_si < 0.6:
             return 3
-        if avg_si < 0.8:
+        if weighted_si < 0.8:
             return 4
         return 5
 
@@ -253,23 +263,71 @@ class KBClient:
 
 
 # ---------------------------------------------------------------------------
-# _compute_avg_si — единая точка вычисления среднего si
+# _compute_weighted_si — единая точка вычисления importance-взвешенного si (D-06)
 # ---------------------------------------------------------------------------
 
-def _compute_avg_si(facts: list[dict]) -> float:
-    """Вычислить средний si по списку фактов.
+# Веса важности факта (D-06: Critical весит больше Minor)
+_IMPORTANCE_WEIGHTS: dict[str, int] = {"Critical": 3, "Major": 2, "Minor": 1}
+_DEFAULT_IMPORTANCE_WEIGHT = 1  # importance отсутствует/неизвестна -> вес как у Minor
 
-    Фильтрует факты без поля si (si=None). Возвращает 0.0 если все si=None
-    или список пустой.
+
+def _compute_weighted_si(facts: list[dict]) -> float:
+    """Вычислить importance-взвешенный si по списку фактов (D-06).
+
+    Каждый факт взвешивается по своей важности (Critical=3 / Major=2 / Minor=1,
+    неизвестная/отсутствующая importance -> вес 1). Фильтрует факты с si=None.
+    Единая точка вычисления (WR-02) — используется и compute_ers_level(), и
+    заголовком _format_facts(), чтобы уровень и отображаемое число никогда не
+    расходились.
 
     Args:
         facts: список фактов из get_substance_evidence / get_biomarker_context
 
     Returns:
-        float — средний si, либо 0.0
+        float — взвешенный si (sum(si_i * w_i) / sum(w_i)), либо 0.0 если facts
+        пустой или все si=None
     """
-    si_values = [f.get("si") for f in facts if f.get("si") is not None]
-    return sum(si_values) / len(si_values) if si_values else 0.0
+    weighted = [
+        (f.get("si"), _IMPORTANCE_WEIGHTS.get(f.get("importance"), _DEFAULT_IMPORTANCE_WEIGHT))
+        for f in facts
+        if f.get("si") is not None
+    ]
+    if not weighted:
+        return 0.0
+    total_weight = sum(w for _, w in weighted)
+    return sum(si * w for si, w in weighted) / total_weight
+
+
+# ---------------------------------------------------------------------------
+# _source_label — метка провенанса источника факта (D-05)
+# ---------------------------------------------------------------------------
+
+def _source_label(sources: list[dict] | None) -> str:
+    """Свернуть список источников факта (:FROM_SOURCE -> :Source) в одну метку.
+
+    OPTIONAL MATCH в _SCHEMA_05 даёт один элемент с url=None/title=None, когда у
+    факта нет ни одного :Source — такие «пустые» элементы отфильтровываются перед
+    подсчётом кардинальности (D-05).
+
+    Args:
+        sources: список {"url": ..., "title": ...} из _SCHEMA_05 (может быть None
+                 если ключ sources отсутствует в факте — defensive access)
+
+    Returns:
+        «не указан» (0 реальных источников), title/url единственного источника (1),
+        либо «{title_of_first} и ещё {N-1}» (N>1)
+    """
+    real_sources = [
+        s for s in (sources or [])
+        if (s.get("title") or s.get("url"))
+    ]
+    if not real_sources:
+        return "не указан"
+    first = real_sources[0]
+    first_label = first.get("title") or first.get("url") or "не указан"
+    if len(real_sources) == 1:
+        return first_label
+    return f"{first_label} и ещё {len(real_sources) - 1}"
 
 
 # ---------------------------------------------------------------------------
@@ -280,12 +338,13 @@ def _format_facts(facts: list[dict], substance_id: str, client: KBClient,
                   name_map: dict | None = None) -> str:
     """Форматировать список фактов в plaintext для QTextEdit.setPlainText().
 
-    Формат (по контракту 07-UI-SPEC.md §KB Fact Text Format Contract):
+    Формат (по контракту 13-UI-SPEC.md §Copywriting Contract, расширяет 07-UI-SPEC.md):
 
         Доказательная база: {name}
-        ERS: {level}/5 · Фактов: {count} · Средний si: {avg_si:.2f}
+        ERS: {level}/5 · Фактов: {count} · Средневзвешенный si: {weighted_si:.2f}
 
-        {subject} → {predicate} → {object} (si={si:.2f})
+        {subject} → {predicate} → {object} (si={si:.2f}) [Источник: {source_label}]
+        {subject} (si={si:.2f}) [Источник: {source_label}]  -- если predicate/object пусты (Pitfall 5)
         ... (до 5 фактов)
 
     Args:
@@ -308,11 +367,14 @@ def _format_facts(facts: list[dict], substance_id: str, client: KBClient,
     level = client.compute_ers_level(facts)
     count = len(facts)
 
-    avg_si = _compute_avg_si(facts)  # WR-02: единая точка вычисления avg_si
+    # D-06/WR-02: единая точка вычисления — тот же взвешенный si кормит и уровень
+    # (через client.compute_ers_level -> _compute_weighted_si), и число в заголовке,
+    # чтобы показанное значение никогда не расходилось с уровнем, который оно объясняет
+    weighted_si = _compute_weighted_si(facts)
 
     lines = [
         f"Доказательная база: {name}",
-        f"ERS: {level}/5 · Фактов: {count} · Средний si: {avg_si:.2f}",
+        f"ERS: {level}/5 · Фактов: {count} · Средневзвешенный si: {weighted_si:.2f}",
         "",
     ]
 
@@ -323,7 +385,15 @@ def _format_facts(facts: list[dict], substance_id: str, client: KBClient,
         obj = fact.get("object", "")
         si_val = fact.get("si")
         si_str = f"{si_val:.2f}" if si_val is not None else "N/A"
-        lines.append(f"{subject} → {predicate} → {obj} (si={si_str})")
+        source_label = _source_label(fact.get("sources"))
+        if predicate and obj:
+            lines.append(
+                f"{subject} → {predicate} → {obj} (si={si_str}) [Источник: {source_label}]"
+            )
+        else:
+            # Pitfall 5: ~75% фактов в базе не разбиты на S->P->O — не рисовать
+            # болтающиеся стрелки для факта-предложения без predicate/object
+            lines.append(f"{subject} (si={si_str}) [Источник: {source_label}]")
 
     return "\n".join(lines)
 
@@ -364,8 +434,10 @@ class KBWorker(QObject):
                 name_ru = item.get("name_ru", "")
                 if sub_id and name_ru:
                     self._name_map[sub_id] = name_ru
-        except (FileNotFoundError, json.JSONDecodeError, Exception):
-            pass  # graceful degradation — используем substance_id как fallback
+        except Exception:
+            # graceful degradation — используем substance_id как fallback.
+            # IN-01: FileNotFoundError/json.JSONDecodeError уже покрыты Exception.
+            pass
 
     def request_evidence(self, substance_id: str) -> None:
         """Установить целевое вещество и сбросить флаг отмены.
@@ -473,13 +545,23 @@ def update_wiki_ers(
     # 1. Обновить YAML frontmatter — хирургическая замена нужных полей
     fm_pattern = re.compile(r"^(---\n)(.*?)(---\n)", re.DOTALL | re.MULTILINE)
     match = fm_pattern.match(text)
-    if match:
-        fm_body = match.group(2)
-        # Удалить старые поля evidence_level / evidence_label если есть
-        fm_body = re.sub(r"^evidence_level:.*\n?", "", fm_body, flags=re.MULTILINE)
-        fm_body = re.sub(r"^evidence_label:.*\n?", "", fm_body, flags=re.MULTILINE)
-        fm_body += f'evidence_level: {evidence_level}\nevidence_label: "{evidence_label}"\n'
-        text = f"---\n{fm_body}---\n" + text[match.end():]
+    if match is None:
+        # WR-06: raise instead of silently no-op'ing — the function's contract
+        # is to always write the ERS callout; a silent skip here previously
+        # left evidence_level/evidence_label unwritten with no error surfaced.
+        raise ValueError(f"{md_path}: no YAML frontmatter found, cannot write ERS data")
+
+    fm_body = match.group(2)
+    # Удалить старые поля evidence_level / evidence_label если есть
+    fm_body = re.sub(r"^evidence_level:.*\n?", "", fm_body, flags=re.MULTILINE)
+    fm_body = re.sub(r"^evidence_label:.*\n?", "", fm_body, flags=re.MULTILINE)
+    fm_body += f'evidence_level: {evidence_level}\nevidence_label: "{evidence_label}"\n'
+    new_frontmatter = f"---\n{fm_body}---\n"
+    # WR-06: fm_end anchored to the actual (recomputed) frontmatter boundary
+    # instead of re-deriving it via a hardcoded text[4:] magic-number offset,
+    # which broke silently for CRLF line endings or files with no frontmatter.
+    fm_end = len(new_frontmatter)
+    text = new_frontmatter + text[match.end():]
 
     # 2. Удалить старый ERS callout если есть
     # WR-03: паттерн [★☆]+ идентифицирует именно наш callout, избегая удаления
@@ -491,15 +573,12 @@ def update_wiki_ers(
         flags=re.DOTALL,
     )
 
-    # 3. Вставить новый callout после frontmatter
+    # 3. Вставить новый callout после frontmatter (fm_end уже указывает точно
+    # на позицию сразу после закрывающего "---\n" — см. WR-06 выше)
     callout = (
         f"\n> [!info] ERS: {stars} {evidence_label} доказательная база\n"
         f"> Источник: mortality KB · Фактов: {fact_count} · Средний si: {avg_si:.2f}\n"
     )
-    # Найти конец frontmatter (второй ---)
-    fm_end_match = re.search(r"^---\n", text[4:], re.MULTILINE)
-    if fm_end_match:
-        fm_end = 4 + fm_end_match.end()
-        text = text[:fm_end] + callout + text[fm_end:]
+    text = text[:fm_end] + callout + text[fm_end:]
 
     md_path.write_text(text, encoding="utf-8")

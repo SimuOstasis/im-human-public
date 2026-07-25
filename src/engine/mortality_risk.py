@@ -22,12 +22,35 @@ PHENOAGE_BETA: dict[str, float] = {
     "log_hscrp":  0.0954,
 }
 PHENOAGE_AGE_COEF: float = 0.0804
-# Calibrated intercept [ASSUMED]: young_healthy_30m → biological_age ≈ 30.6 лет.
-# Homeostasis initializes fastingGlucose baseline from optimal=[0, 5.5] → midpoint=2.75 mmol/L.
-# After one tick, total_no_intercept ≈ 11.644; target=30 → intercept = 18.356 → use 19.0.
-# Result: 30.644 ∈ [24, 36] (test gate) and [28, 34] (plan spec).
-# If test_biological_age_calibration fails — adjust by ±1.0 until target is in [24, 36].
-PHENOAGE_INTERCEPT_PARTIAL: float = 19.0
+# Calibrated intercept — методологически выведен (Phase 12, HF-02, D-06/D-14, Approach A),
+# НЕ подобран под тестовый гейт. Метод: разовый calibration-скрипт
+# scripts/calibrate_phenoage_intercept.py (не runtime-зависимость, не импортируется
+# отсюда) прогоняет истинную нелинейную формулу Levine et al. 2018 (PMC5940111,
+# Gompertz-трансформ, все 9 маркеров PhenoAge) по реальной выборке NHANES 2010
+# (biolearn.load.load_nhanes, n=2877 взрослых 18-80 — обеспечивает референсные
+# значения для 5 маркеров, отсутствующих в этой упрощённой модели: Lymphocyte%,
+# MCV, RDW, ALP, WBC), получая референсные `biological_age`. Затем эта же линейная
+# форма кодовой базы (фиксированные PHENOAGE_BETA/PHENOAGE_AGE_COEF выше, не
+# менявшиеся) OLS-подгоняется под референс, варьируя ТОЛЬКО этот intercept
+# (замкнутая форма для единственного свободного параметра: intercept =
+# mean(референс − partial_sum_без_intercept)). Подробности метода, единицы
+# измерения и найденные при выводе неточности исходного исследования (12-RESEARCH.md
+# §HF-02 Deep-Dive) — в докстринге scripts/calibrate_phenoage_intercept.py и
+# 12-01-SUMMARY.md.
+#
+# WR-01 code-review fix (2026-07-19): предыдущее значение (19.0565) было
+# откалибровано против `_to_phenoage_units()`, которая ошибочно конвертировала
+# albumin/creatinine/glucose в "конвенциональные" г/дл/мг/дл перед применением
+# SI-калиброванных PHENOAGE_BETA — искажая чувствительность модели к этим
+# маркерам (creatinine ~88× занижена, glucose ~18× завышена). После удаления
+# этой ошибочной конвертации (albumin/creatinine/glucose теперь передаются
+# напрямую в SI-единицах Table 1, как и предполагают PHENOAGE_BETA) intercept
+# пересчитан заново тем же методом на той же NHANES-выборке (n=2877). Остаточное
+# std подгонки на уровне отдельных NHANES-строк ≈19.9 года (было ≈18.6 —
+# сопоставимо; это упрощённая 4-маркерная линейная модель объясняет лишь часть
+# дисперсии истинной 9-маркерной нелинейной PhenoAge — ожидаемое ограничение
+# архитектуры, не ошибка вывода intercept'а).
+PHENOAGE_INTERCEPT_PARTIAL: float = 39.24825879622859
 
 # ─── Константы resilience ────────────────────────────────────────────────────
 
@@ -50,18 +73,25 @@ class MortalityRiskEngine:
 
     @staticmethod
     def _to_phenoage_units(biomarkers: dict[str, float]) -> dict[str, float]:
-        """Конвертировать биомаркеры в единицы PhenoAge Levine 2018.
+        """Конвертировать биомаркеры в единицы PhenoAge Levine 2018 (PMC5940111 Table 1).
+
+        Table 1 публикации использует НАПРЯМУЮ SI-единицы NHANES для albumin/
+        creatinine/glucose (WR-01 code-review fix, 2026-07-19) — БЕЗ конвертации
+        в "конвенциональные" г/дл/мг/дл, как ошибочно делалось ранее (см. находку
+        в docstring scripts/calibrate_phenoage_intercept.py, п.3). Единственная
+        реальная конвертация единиц — hsCrp: мг/л → мг/дл (÷10), т.к. приложение
+        хранит hsCrp в мг/л, а формуле нужен log(CRP в мг/дл).
 
         Конвертации:
-          albumin: g/L → g/dL (÷10)
-          creatinine: µmol/L → mg/dL (÷88.4)
-          fastingGlucose: mmol/L → mg/dL (×18)
+          albumin: g/L → g/L (без изменений, уже SI)
+          creatinine: µmol/L → µmol/L (без изменений, уже SI)
+          fastingGlucose: mmol/L → mmol/L (без изменений, уже SI)
           hsCrp: mg/L → log(mg/dL) = log(hsCrp ÷ 10)
         """
         return {
-            "albumin": biomarkers.get("albumin", 45.0) / 10.0,
-            "creatinine": biomarkers.get("creatinine", 80.0) / 88.4,
-            "glucose": biomarkers.get("fastingGlucose", 5.0) * 18.0,
+            "albumin": biomarkers.get("albumin", 45.0),
+            "creatinine": biomarkers.get("creatinine", 80.0),
+            "glucose": biomarkers.get("fastingGlucose", 5.0),
             "log_hscrp": math.log(max(0.01, biomarkers.get("hsCrp", 1.0) / 10.0)),
         }
 
@@ -76,8 +106,8 @@ class MortalityRiskEngine:
         fastingGlucose, hsCrp. Недостающие (Lymphocyte%, MCV, RDW, ALP, WBC) →
         заложены в PHENOAGE_INTERCEPT_PARTIAL.
 
-        PHENOAGE_INTERCEPT_PARTIAL калиброван в модуле — см. комментарий к
-        константе выше (строки 20-25).
+        PHENOAGE_INTERCEPT_PARTIAL выведен методологически (Approach A, D-06/D-14) —
+        см. комментарий к константе выше и scripts/calibrate_phenoage_intercept.py.
 
         Args:
             biomarkers: Словарь биомаркеров в единицах MVP-24.

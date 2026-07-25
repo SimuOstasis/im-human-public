@@ -19,7 +19,8 @@ def load_dotenv(env_path: Path | None = None) -> None:
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, _, value = line.partition("=")
-        os.environ.setdefault(key.strip(), value.strip())
+        value = value.split("#")[0].strip()  # drop inline comment, e.g. "secret  # prod"
+        os.environ.setdefault(key.strip(), value)
 
 
 def require_env(key: str) -> str:

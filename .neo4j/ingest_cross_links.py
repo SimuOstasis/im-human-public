@@ -37,15 +37,17 @@ load_dotenv()  # reads .neo4j/.env via _utils; no-op if file absent
 # Slug mappings (D-10: hardcoded; verified against Mortality DB — Task 1 checkpoint)
 # ---------------------------------------------------------------------------
 
-# 7 MVP substances (berberine excluded — no page in Mortality KB per Open Question 2)
-# Slugs verified against Mortality DB: pages use path-prefix format (service/, pathways/)
+# Only canonical pages from substantive Mortality sections are valid targets.
+# Magnesium and berberine are absent because no canonical Mortality page exists.
+# Slugs use path-prefix format (research/biology/, pathways/). Phase 13
+# (D-09, live-verified 2026-07-19) re-pointed omega3/metformin/rapamycin from
+# service/* stub pages to content-bearing research/biology/* pages; vitamin_d3/nmn
+# were already correct and are unchanged.
 SUBSTANCE_SLUG_MAP: dict[str, str] = {
-    "omega3":       "service/omega-3",
-    "metformin":    "service/metformin",
-    "rapamycin":    "service/rapamycin",
+    "omega3":       "research/biology/omega-3-research",
+    "metformin":    "research/biology/metformin",
+    "rapamycin":    "research/biology/rapamycin",
     "vitamin_d3":   "research/biology/vitamin-d3",
-    "ashwagandha":  "service/ashwagandha",
-    "magnesium":    "service/magnesium",
     "nmn":          "pathways/nmn-nr",
 }
 
@@ -111,17 +113,11 @@ def ingest(session, *, human_db: str = "Human", clear: bool = False) -> None:
             id=sub_id,
             slug=slug,
         )
-        try:
-            props_set = int(result.consume().counters.properties_set)
-        except (TypeError, ValueError, AttributeError):
-            props_set = -1  # real DB would always return int; -1 signals mock/unknown
+        props_set = int(result.consume().counters.properties_set)
         if props_set > 0:
             sub_hit += 1
-        elif props_set == 0:
-            print(f"[WARN] Substance not found in Human DB: id={sub_id!r} (slug={slug!r})", file=sys.stderr)
-        # props_set == -1 (mock/unknown): count as hit (test scenario)
         else:
-            sub_hit += 1
+            print(f"[WARN] Substance not found in Human DB: id={sub_id!r} (slug={slug!r})", file=sys.stderr)
 
     print(f"[INFO] Substances: {sub_hit}/{len(SUBSTANCE_SLUG_MAP)} mortality_slug set")
 
@@ -133,16 +129,11 @@ def ingest(session, *, human_db: str = "Human", clear: bool = False) -> None:
             code=code,
             slug=slug,
         )
-        try:
-            props_set = int(result.consume().counters.properties_set)
-        except (TypeError, ValueError, AttributeError):
-            props_set = -1  # real DB would always return int; -1 signals mock/unknown
+        props_set = int(result.consume().counters.properties_set)
         if props_set > 0:
             bio_hit += 1
-        elif props_set == 0:
-            print(f"[WARN] Biomarker not found in Human DB: code={code!r} (slug={slug!r})", file=sys.stderr)
         else:
-            bio_hit += 1
+            print(f"[WARN] Biomarker not found in Human DB: code={code!r} (slug={slug!r})", file=sys.stderr)
 
     print(f"[INFO] Biomarkers: {bio_hit}/{len(BIOMARKER_SLUG_MAP)} mortality_slug set")
 

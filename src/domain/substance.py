@@ -35,15 +35,6 @@ class SubstanceCategory(str, Enum):
     drug = "drug"
 
 
-class EvidenceLevel(str, Enum):
-    """Evidence level for clinical relevance."""
-
-    high = "high"
-    moderate = "moderate"
-    low = "low"
-    experimental = "experimental"
-
-
 # ─── CycleConfig (D-08) ───────────────────────────────────────────────────────
 
 class CycleConfig(BaseModel):
@@ -66,7 +57,7 @@ class SubstanceDefinition(BaseModel):
     Python attributes are snake_case. Both work via populate_by_name=True.
 
     Fields follow the ingest_substances.py schema exactly:
-      id, name, name_ru, category, evidenceLevel, doseUnit, minDose, maxDose,
+      id, name, name_ru, category, doseUnit, minDose, maxDose,
       defaultDose, bioavailability, halfLifeHours, effectProfile, targetSystems,
       absorptionRate, eliminationRate, accumulationThreshold.
     """
@@ -77,7 +68,6 @@ class SubstanceDefinition(BaseModel):
     name: str
     name_ru: str = ""
     category: SubstanceCategory
-    evidence_level: EvidenceLevel = Field(alias="evidenceLevel")
     dose_unit: str = Field(alias="doseUnit")
     min_dose: float = Field(alias="minDose", ge=0)
     max_dose: float = Field(alias="maxDose", gt=0)

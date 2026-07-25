@@ -54,8 +54,8 @@
     <rect x="776" y="140" width="152" height="96" rx="8" fill="#f1f3f5"/>
     <polyline points="784,214 810,196 836,204 862,168 888,178 920,150" fill="none" stroke="#37b24d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
     <polyline points="784,226 812,220 840,228 868,214 900,220 920,208" fill="none" stroke="#f03e3e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
-    <text x="852" y="316" text-anchor="middle" font-size="18" font-weight="700" fill="#1c2b3a">4. Приборы</text>
-    <text x="852" y="340" text-anchor="middle" font-size="13" fill="#5b6b7b">24 биомаркера</text>
+    <text x="852" y="316" text-anchor="middle" font-size="18" font-weight="700" fill="#1c2b3a">4. Биомаркеры</text>
+    <text x="852" y="340" text-anchor="middle" font-size="13" fill="#5b6b7b">24 показателя</text>
     <text x="852" y="356" text-anchor="middle" font-size="13" fill="#5b6b7b">меняются на графиках</text>
   </g>
 

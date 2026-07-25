@@ -2,7 +2,7 @@
 
 ## License
 
-This work is licensed under the Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt) for the full text.
+This work is licensed under the Apache License, Version 2.0. See [[LICENSE.txt]] for the full text.
 
 Copyright © 2026 Vladimir Bazhin. Contact: info@simuostasis.com
 
@@ -35,18 +35,18 @@ M7  Export, Tests & Documentation   [Неделя 6]     ░░░░░░░�
 
 ### Задачи
 
-- [ ] M0.1 — Создать структуру папок Obsidian (`00-09`, `src/`, `.neo4j/`, `.planning/`)
-- [ ] M0.2 — Написать `CLAUDE.md` (правила вики и архитектура)
-- [ ] M0.3 — Создать `HOME.md` (каталог всех страниц)
-- [ ] M0.4 — Создать `log.md` (append-only лог операций)
-- [ ] M0.5 — Настроить `.neo4j/.env` (подключение к базе `Human`)
+- [x] M0.1 — Создать структуру папок Obsidian (`00-09`, `src/`, `.neo4j/`, `.planning/`)
+- [x] M0.2 — Написать `CLAUDE.md` (правила вики и архитектура)
+- [x] M0.3 — Создать `HOME.md` (каталог всех страниц)
+- [x] M0.4 — Создать `log.md` (append-only лог операций)
+- [x] M0.5 — Настроить `.neo4j/.env` (подключение к базе `Human`)
 - [ ] M0.6 — Адаптировать `ingest_wiki.py` из mortality для базы `Human`
-- [ ] M0.7 — Адаптировать `query_wiki.py` для базы `Human`
-- [ ] M0.8 — Написать `setup_schema.py` (создать схему Neo4j: узлы, индексы, constraints)
-- [ ] M0.9 — Создать `requirements.txt` (`neo4j`, `pyside6`, `pyyaml`, `sentence-transformers`, `pydantic`, `pytest`)
-- [ ] M0.10 — Написать `check_connection.py` и проверить подключение
+- [x] M0.7 — Адаптировать `query_wiki.py` для базы `Human`
+- [x] M0.8 — Написать `setup_schema.py` (создать схему Neo4j: узлы, индексы, constraints)
+- [x] M0.9 — Создать `requirements.txt` (`neo4j`, `pyside6`, `pyyaml`, `sentence-transformers`, `pydantic`, `pytest`)
+- [x] M0.10 — Написать `check_connection.py` и проверить подключение
 - [ ] M0.11 — Инициализировать git репозиторий + `.gitignore`
-- [ ] M0.12 — Создать `.planning/PROJECT.md` для GSD
+- [x] M0.12 — Создать `.planning/PROJECT.md` для GSD
 
 ### Выходные артефакты
 
@@ -64,16 +64,16 @@ M7  Export, Tests & Documentation   [Неделя 6]     ░░░░░░░�
 
 ### Задачи
 
-- [ ] M1.1 — Создать шаблон `09 - Templates/Biomarker Template.md`
-- [ ] M1.2 — Парсить `Биомаркеры_v1.txt` → структурированные данные (Python скрипт)
-- [ ] M1.3 — Создать страницы для 24 MVP-биомаркеров в `02 - Biomarkers/`
-- [ ] M1.4 — Создать `src/data/biomarkers.json` (машиночитаемый справочник)
-- [ ] M1.5 — Создать `src/data/reference_ranges.json` (optimal / borderline / high_risk по полу и возрасту)
-- [ ] M1.6 — Определить Neo4j схему `:Biomarker`, `:BiomarkerCategory`, `:Organ`
-- [ ] M1.7 — Написать `ingest_biomarkers.py` — загрузка биомаркеров в Neo4j
-- [ ] M1.8 — Загрузить все 24 MVP-биомаркера в Neo4j, проверить запросами
-- [ ] M1.9 — Создать индексные страницы по категориям (`08 - Index/Biomarkers Index.md`)
-- [ ] M1.10 — Обновить `HOME.md`
+- [x] M1.1 — Создать шаблон `09 - Templates/Biomarker Template.md`
+- [x] M1.2 — Парсить `Биомаркеры_v1.txt` → структурированные данные (Python скрипт)
+- [x] M1.3 — Создать страницы для 24 MVP-биомаркеров в `02 - Biomarkers/`
+- [x] M1.4 — Создать `src/data/biomarkers.json` (машиночитаемый справочник)
+- [x] M1.5 — Создать `src/data/reference_ranges.json` (optimal / borderline / high_risk по полу и возрасту)
+- [x] M1.6 — Определить Neo4j схему `:Biomarker`, `:BiomarkerCategory`, `:Organ`
+- [x] M1.7 — Написать `ingest_biomarkers.py` — загрузка биомаркеров в Neo4j
+- [x] M1.8 — Загрузить все 24 MVP-биомаркера в Neo4j, проверить запросами
+- [x] M1.9 — Создать индексные страницы по категориям (`08 - Index/Biomarkers Index.md`)
+- [x] M1.10 — Обновить `HOME.md`
 
 ### Структура страницы биомаркера
 
@@ -106,15 +106,15 @@ tags: [lipids, cardiovascular-risk]
 
 ### Задачи
 
-- [ ] M2.1 — Написать `src/domain/human_profile.py` (Pydantic BaseModel)
-- [ ] M2.2 — Реализовать разделы: Demographics, Physiology, Lifestyle, Predispositions, OrganSystems
-- [ ] M2.3 — Написать `src/domain/units.py` (конвертации единиц: ммоль/л ↔ мг/дл, и др.)
-- [ ] M2.4 — Написать `src/domain/simulation_state.py` (FSM: idle→configured→running→paused→completed→failed)
-- [ ] M2.5 — Реализовать расчёт BMI и BMR из профиля
-- [ ] M2.6 — Создать шаблон `09 - Templates/Human Profile Template.md`
-- [ ] M2.7 — Создать 3 пресетных профиля: `Молодой здоровый 30M`, `Средний возраст 50F`, `Пожилой 70M`
-- [ ] M2.8 — Записать пресеты в Obsidian и Neo4j (`01 - Human Profiles/`)
-- [ ] M2.9 — Написать тесты `src/tests/test_human_profile.py`
+- [x] M2.1 — Написать `src/domain/human_profile.py` (Pydantic BaseModel)
+- [x] M2.2 — Реализовать разделы: Demographics, Physiology, Lifestyle, Predispositions, OrganSystems
+- [x] M2.3 — Написать `src/domain/units.py` (конвертации единиц: ммоль/л ↔ мг/дл, и др.)
+- [x] M2.4 — Написать `src/domain/simulation_state.py` (FSM: idle→configured→running→paused→completed→failed)
+- [x] M2.5 — Реализовать расчёт BMI и BMR из профиля
+- [x] M2.6 — Создать шаблон `09 - Templates/Human Profile Template.md`
+- [x] M2.7 — Создать 3 пресетных профиля: `Молодой здоровый 30M`, `Средний возраст 50F`, `Пожилой 70M`
+- [x] M2.8 — Записать пресеты в Obsidian и Neo4j (`01 - Human Profiles/`)
+- [x] M2.9 — Написать тесты `src/tests/test_human_profile.py`
 
 ### Параметры HumanProfile (ключевые)
 
@@ -168,15 +168,15 @@ class HumanProfile(BaseModel):
 
 ### Задачи
 
-- [ ] M3.1 — Написать `src/domain/substance.py` (SubstanceDefinition, IntakeSchedule)
-- [ ] M3.2 — Создать `src/data/substances.json` с 7 веществами MVP
-- [ ] M3.3 — Создать `src/data/interactions.json` (матрица synergy/antagonism/toxicity)
-- [ ] M3.4 — Написать страницы в `03 - Substances/` для каждого вещества
-- [ ] M3.5 — Определить Neo4j схему `:Substance`, `:Interaction`, `:Effect`
-- [ ] M3.6 — Написать `ingest_substances.py` — загрузка веществ в Neo4j
-- [ ] M3.7 — Проверить перекрёстные ссылки: вещество → биомаркер → орган
-- [ ] M3.8 — Создать страницы взаимодействий в `04 - Interactions/`
-- [ ] M3.9 — Написать тесты для SubstanceDefinition
+- [x] M3.1 — Написать `src/domain/substance.py` (SubstanceDefinition, IntakeSchedule)
+- [x] M3.2 — Создать `src/data/substances.json` с 7 веществами MVP
+- [x] M3.3 — Создать `src/data/interactions.json` (матрица synergy/antagonism/toxicity)
+- [x] M3.4 — Написать страницы в `03 - Substances/` для каждого вещества
+- [x] M3.5 — Определить Neo4j схему `:Substance`, `:Interaction`, `:Effect`
+- [x] M3.6 — Написать `ingest_substances.py` — загрузка веществ в Neo4j
+- [x] M3.7 — Проверить перекрёстные ссылки: вещество → биомаркер → орган
+- [x] M3.8 — Создать страницы взаимодействий в `04 - Interactions/`
+- [x] M3.9 — Написать тесты для SubstanceDefinition
 
 ### Вещества MVP
 
@@ -208,19 +208,19 @@ class HumanProfile(BaseModel):
 
 ### Задачи
 
-- [ ] M4.1 — Написать `src/engine/rng.py` (seed-based LCG или Mersenne Twister обёртка)
-- [ ] M4.2 — Написать `src/engine/pharmacokinetics.py` (абсорбция, Vd, T½, выведение, кумуляция)
-- [ ] M4.3 — Написать `src/engine/homeostasis.py` (базовый износ, восстановление, образ жизни)
-- [ ] M4.4 — Написать `src/engine/interaction_resolver.py` (synergy, antagonism, toxicity)
-- [ ] M4.5 — Написать `src/engine/event_detector.py` (события с вероятностями из состояния модели)
-- [ ] M4.6 — Написать `src/engine/adaptive_stepper.py` (x1/x10/x100/x1000/x10000 + дробление)
-- [ ] M4.7 — Написать главный `src/engine/simulation_engine.py` (оркестрация 13 шагов тика)
-- [ ] M4.8 — Написать `src/engine/mortality_risk.py` (biological_age, resilience_index)
-- [ ] M4.9 — Написать тесты: период полувыведения, отсутствие NaN, граничные значения 0-100
-- [ ] M4.10 — Написать тесты: воспроизводимость по seed, пауза/возобновление
-- [ ] M4.11 — Написать тесты: синергия, антагонизм, токсический порог
-- [ ] M4.12 — Benchmark-тест: 1 модельный год за < 5 сек, отклонение ≤ 2%
-- [ ] M4.13 — Задокументировать все формулы в `06 - Engine/`
+- [x] M4.1 — Написать `src/engine/rng.py` (seed-based LCG или Mersenne Twister обёртка)
+- [x] M4.2 — Написать `src/engine/pharmacokinetics.py` (абсорбция, Vd, T½, выведение, кумуляция)
+- [x] M4.3 — Написать `src/engine/homeostasis.py` (базовый износ, восстановление, образ жизни)
+- [x] M4.4 — Написать `src/engine/interaction_resolver.py` (synergy, antagonism, toxicity)
+- [x] M4.5 — Написать `src/engine/event_detector.py` (события с вероятностями из состояния модели)
+- [x] M4.6 — Написать `src/engine/adaptive_stepper.py` (x1/x10/x100/x1000/x10000 + дробление)
+- [x] M4.7 — Написать главный `src/engine/simulation_engine.py` (оркестрация 13 шагов тика)
+- [x] M4.8 — Написать `src/engine/mortality_risk.py` (biological_age, resilience_index)
+- [x] M4.9 — Написать тесты: период полувыведения, отсутствие NaN, граничные значения 0-100
+- [x] M4.10 — Написать тесты: воспроизводимость по seed, пауза/возобновление
+- [x] M4.11 — Написать тесты: синергия, антагонизм, токсический порог
+- [x] M4.12 — Benchmark-тест: 1 модельный год за < 5 сек, отклонение ≤ 2%
+- [x] M4.13 — Задокументировать все формулы в `06 - Engine/`
 
 ### Формула тика (каждый орган)
 
@@ -270,18 +270,18 @@ next_health = clamp(
 
 ### Задачи
 
-- [ ] M5.1 — Настроить PySide6 (версия из `mortality/Scripts`)
-- [ ] M5.2 — Написать `src/ui/main_window.py` (QMainWindow, layout 4 зон)
-- [ ] M5.3 — Написать `src/ui/human_panel.py` (QFormLayout + sliders/spinboxes, пресеты, BMI/BMR)
-- [ ] M5.4 — Написать `src/ui/time_controls.py` (pause/x1/x10/x100/x1000/x10000, таймер)
-- [ ] M5.5 — Написать `src/ui/telemetry_dashboard.py` (QCharts или matplotlib/pyqtgraph, 24 биомаркера)
-- [ ] M5.6 — Написать `src/ui/substance_manager.py` (список веществ, дозы, расписания)
-- [ ] M5.7 — Написать `src/ui/event_log.py` (QListView + фильтры по категориям)
-- [ ] M5.8 — Реализовать threading: движок в QThread, UI обновляется по сигналу ≤ 10 Гц
-- [ ] M5.9 — Написать `src/ui/disclaimer.py` (постоянный баннер дисклеймера)
-- [ ] M5.10 — Реализовать даунсэмплинг истории графиков (буфер ≤ 5000 точек на биомаркер)
-- [ ] M5.11 — Тёмная тема + Русская локализация
-- [ ] M5.12 — Создать `src/main.py` (точка входа)
+- [x] M5.1 — Настроить PySide6 (версия из `mortality/Scripts`)
+- [x] M5.2 — Написать `src/ui/main_window.py` (QMainWindow, layout 4 зон)
+- [x] M5.3 — Написать `src/ui/human_panel.py` (QFormLayout + sliders/spinboxes, пресеты, BMI/BMR)
+- [x] M5.4 — Написать `src/ui/time_controls.py` (pause/x1/x10/x100/x1000/x10000, таймер)
+- [x] M5.5 — Написать `src/ui/telemetry_dashboard.py` (QCharts или matplotlib/pyqtgraph, 24 биомаркера)
+- [x] M5.6 — Написать `src/ui/substance_manager.py` (список веществ, дозы, расписания)
+- [x] M5.7 — Написать `src/ui/event_log.py` (QListView + фильтры по категориям)
+- [x] M5.8 — Реализовать threading: движок в QThread, UI обновляется по сигналу ≤ 10 Гц
+- [x] M5.9 — Написать `src/ui/disclaimer.py` (постоянный баннер дисклеймера)
+- [x] M5.10 — Реализовать даунсэмплинг истории графиков (буфер ≤ 5000 точек на биомаркер)
+- [x] M5.11 — Тёмная тема + Русская локализация
+- [x] M5.12 — Создать `src/main.py` (точка входа)
 
 ### 4 зоны UI
 
@@ -315,13 +315,13 @@ next_health = clamp(
 
 ### Задачи
 
-- [ ] M6.1 — Написать `src/engine/kb_client.py` (запросы к Neo4j mortality KB)
-- [ ] M6.2 — Реализовать `get_substance_evidence(substance_id)` — возвращает уровень доказательности и факты из mortality
-- [ ] M6.3 — Реализовать `get_biomarker_context(biomarker_code)` — связанные исследования из mortality
-- [ ] M6.4 — Добавить в UI панель «Научный контекст» (всплывающий или sidebar)
-- [ ] M6.5 — Перенести страницы биомаркеров с ссылками на mortality KB
-- [ ] M6.6 — Написать `ingest_cross_links.py` — создать связи `:REFERENCES` между human и mortality узлами
-- [ ] M6.7 — Обновить вики-страницы веществ с ERS-значками из mortality
+- [x] M6.1 — Написать `src/engine/kb_client.py` (запросы к Neo4j mortality KB)
+- [x] M6.2 — Реализовать `get_substance_evidence(substance_id)` — возвращает уровень доказательности и факты из mortality
+- [x] M6.3 — Реализовать `get_biomarker_context(biomarker_code)` — связанные исследования из mortality
+- [x] M6.4 — Добавить в UI панель «Научный контекст» (всплывающий или sidebar)
+- [x] M6.5 — Перенести страницы биомаркеров с ссылками на mortality KB
+- [x] M6.6 — Написать `ingest_cross_links.py` — создать связи `:REFERENCES` между human и mortality узлами
+- [x] M6.7 — Обновить вики-страницы веществ с ERS-значками из mortality
 
 ### Выходные артефакты
 
@@ -337,16 +337,16 @@ next_health = clamp(
 
 ### Задачи
 
-- [ ] M7.1 — Написать `src/engine/exporter.py` (JSON экспорт полного состояния симуляции)
-- [ ] M7.2 — Реализовать импорт с Pydantic валидацией и обработкой версий
-- [ ] M7.3 — Написать `src/tests/test_export_import.py`
-- [ ] M7.4 — Написать `src/tests/test_benchmark.py` (1 год за < 5 сек, ≤ 2% отклонение)
-- [ ] M7.5 — Написать итоговую документацию движка в `06 - Engine/`
-- [ ] M7.6 — Написать `README.md` (установка, запуск, быстрый старт)
-- [ ] M7.7 — Создать страницу `07 - Analysis/Simulation Assumptions.md` (игровые допущения)
-- [ ] M7.8 — Создать страницу `07 - Analysis/Known Limitations.md`
-- [ ] M7.9 — Финальный lint вики (проверить битые ссылки, страницы-сироты)
-- [ ] M7.10 — Полная пересборка Neo4j (`ingest_wiki.py --clear`)
+- [x] M7.1 — Написать `src/engine/exporter.py` (JSON экспорт полного состояния симуляции)
+- [x] M7.2 — Реализовать импорт с Pydantic валидацией и обработкой версий
+- [x] M7.3 — Написать `src/tests/test_export_import.py`
+- [x] M7.4 — Написать `src/tests/test_benchmark.py` (1 год за < 5 сек, ≤ 2% отклонение)
+- [x] M7.5 — Написать итоговую документацию движка в `06 - Engine/`
+- [x] M7.6 — Написать `README.md` (установка, запуск, быстрый старт)
+- [x] M7.7 — Создать страницу `07 - Analysis/Simulation Assumptions.md` (игровые допущения)
+- [x] M7.8 — Создать страницу `07 - Analysis/Known Limitations.md`
+- [x] M7.9 — Финальный lint вики (проверить битые ссылки, страницы-сироты)
+- [x] M7.10 — Полная пересборка Neo4j (`ingest_wiki.py --clear`)
 
 ### Формат экспорта
 

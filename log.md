@@ -2,7 +2,7 @@
 
 ## License
 
-This work is licensed under the Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt) for the full text.
+This work is licensed under the Apache License, Version 2.0. See [[LICENSE.txt]] for the full text.
 
 Copyright © 2026 Vladimir Bazhin. Contact: info@simuostasis.com
 
@@ -172,3 +172,66 @@ adaptive stepper, RNG) сверены с исходниками — формул
 изменённые контент-страницы движка/анализа/UI). Корневые HOME/README/MILESTONES — вне области
 ingest. Подключение и адрес сервера — см. `log_internal.md`.
 
+---
+
+## [2026-07-10] plan | Создан форвардный план развития im-human
+
+**Создано:**
+- `07 - Analysis/Development Plan_2026-07-10.md` — форвардный план развития приложения (волны 0–4)
+  на основе трёх источников: собственный review 2026-06-28, ревью проекта agent (2026-07-02) и
+  сквозной Product Line Development Plan. Синтезирует текущее состояние (milestone v2.0, Phase 10),
+  переносимые уроки из agent (дисциплина git, отказ от «тихих» xfail, дедупликация формул, pip-audit,
+  README для человека) и шаги по волнам. Отдельным блоком включены **шаги 1 и 2 по производительности
+  UI** (установка PyOpenGL/GPU-рендер; обновление только видимых графиков дашборда); шаги 3–7 того же
+  анализа помечены как выполняемые к этому моменту рутинно. Зарегистрирована в HOME.md (07 - Analysis).
+
+**DUAL-WRITE (Neo4j):** `ingest_wiki.py --changed-only` → Processed: 2, Skipped: 52, Errors: 0
+(синхронизированы `analysis/development-plan-2026-07-10`, `interactions/interactions-index`).
+Адрес сервера — см. `log_internal.md`.
+
+---
+
+## [2026-07-11] plan | Проверен Milestone v2.1 и создан план v2.2
+
+**Проверка:** план Milestone v2.1 сверён с общим планом линейки и ревью соседних проектов.
+
+**Решение по v2.1:** оставлена стабилизация — воспроизводимость, UX, Save/Load, честная маркировка
+`biologicalAge`, справка, dependency hygiene, лёгкий CI/`pip-audit` и измеримая UI-производительность.
+Собственные v2-фичи и межпродуктовая интеграция вынесены из v2.1.
+
+**Создано:**
+- `07 - Analysis/Milestone v2.2. Development Plan_2026-07-11.md` — следующий milestone: экспорт результатов,
+  новые механики модели, интеграция с mortality и design note по возможному Hovorka-модулю из agent.
+
+**Обновлено:**
+- `07 - Analysis/Milestone v2.1. Development Plan_2026-07-10.md` — уточнены границы Milestone v2.1.
+- `HOME.md` — добавлена ссылка на v2.2.
+
+**Уточнение:** внутренняя нумерация «Фаза 0–4» убрана, чтобы не конфликтовать с GSD. v2.1 разложен
+на Phase 10–12, v2.2 — на Phase 13–17; `.planning/ROADMAP.md` приведён к той же раскладке.
+
+**Дополнение 2026-07-11:** с учётом того, что текущий GSD roadmap v2.0 идёт до Phase 13, номера в планах
+уточнены без правки `.planning`: v2.1 = Phase 14–16, v2.2 = Phase 17–21. Phase 21 переформулирована
+как Human-Agent data contract: сначала контракт данных, брокер сообщений как возможный транспортный слой,
+engine-adapter только как крайний вариант без переноса Hovorka-кода в Human.
+
+---
+
+## [2026-07-11] plan | DOS-01 — множественные времена приёма в сутки добавлены в backlog
+
+**Запрос:** проверить, планируется ли возможность задать несколько фиксированных времён приёма в
+сутки для одного вещества (например, 10:00 и 14:00), вместо единственного времени на расписание.
+
+**Проверка кода:** текущая модель расписания (`IntakeSchedule`) поддерживает только одно время
+приёма в сутки на вещество; поле для интервала между дозами объявлено, но движком не используется;
+интерфейс не позволяет задать одно вещество дважды в разное время без обхода UI. Проверка планов
+подтвердила отсутствие этой фичи в GSD roadmap (Phase 09–13), requirements, обоих milestone-планах
+(v2.1, v2.2) и Known Limitations.
+
+**Добавлено:** новое требование **DOS-01** в GSD requirements (deferred/experimental, по образцу
+существующего INT-02) и заметка в roadmap; в план v2.2 — блок «Расписание приёма» в Phase 19 (перед
+новыми биологическими механиками, как менее объёмная предпосылка); в Known Limitations — уточняющая
+врезка и строка в таблице roadmap v2+.
+
+**DUAL-WRITE (Neo4j):** `ingest_wiki.py --changed-only` → Processed: 3, Skipped: 52, Errors: 0
+(Known Limitations, оба milestone-плана). Подключение — см. `log_internal.md`.

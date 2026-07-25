@@ -49,7 +49,6 @@ def ingest(session, substances: list, interactions: list, clear: bool) -> None:
             SET sub.name = $name,
                 sub.name_ru = $name_ru,
                 sub.category = $category,
-                sub.evidence_level = $evidence_level,
                 sub.dose_unit = $dose_unit,
                 sub.min_dose = $min_dose,
                 sub.max_dose = $max_dose,
@@ -64,7 +63,6 @@ def ingest(session, substances: list, interactions: list, clear: bool) -> None:
             id=s["id"], name=s["name"],
             name_ru=s.get("name_ru", s["name"]),
             category=s["category"],
-            evidence_level=s["evidenceLevel"],
             dose_unit=s["doseUnit"],
             min_dose=s["minDose"], max_dose=s["maxDose"],
             default_dose=s["defaultDose"],
@@ -99,7 +97,7 @@ def ingest(session, substances: list, interactions: list, clear: bool) -> None:
                 MERGE (e)-[:ON_BIOMARKER]->(b)
             """, id=effect_id, delta=delta, type=effect_type, sub_id=s["id"], code=biomarker_code)
 
-        print(f"  [SUB] {s['id']} ({s['category']}, {s['evidenceLevel']})")
+        print(f"  [SUB] {s['id']} ({s['category']})")
 
     # Create interactions
     for ix in interactions:
@@ -148,6 +146,7 @@ def main() -> None:
 
     try:
         from neo4j import GraphDatabase
+        from neo4j.exceptions import AuthError, ServiceUnavailable
     except ImportError:
         print("[ERROR] pip install neo4j")
         sys.exit(1)
@@ -159,6 +158,14 @@ def main() -> None:
     try:
         with driver.session(database=os.environ.get("NEO4J_DATABASE", "Human")) as session:
             ingest(session, substances, interactions, args.clear)
+    except ServiceUnavailable:
+        # T-07-03: do not log password or URI details
+        print("[ERROR] Neo4j is unavailable. Check that the database is running.", file=sys.stderr)
+        sys.exit(1)
+    except AuthError:
+        # T-07-03: do not log credentials
+        print("[ERROR] Neo4j authentication failed. Check NEO4J_USER/NEO4J_PASSWORD in .neo4j/.env.", file=sys.stderr)
+        sys.exit(1)
     finally:
         driver.close()
 

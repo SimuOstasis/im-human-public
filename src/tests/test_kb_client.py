@@ -339,3 +339,138 @@ def test_kb_worker_signals():
     assert worker._cancelled is True, (
         "После cancel _cancelled должен быть True"
     )
+
+
+# ── Тест 9: _SCHEMA_05 фильтрует si>=0.5 и джойнит :FROM_SOURCE (D-04/D-05) ──
+
+def test_schema05_has_si_filter_and_source():
+    """D-04/D-05: _SCHEMA_05 фильтрует факты по si >= 0.5 и в одном проходе
+    джойнит :FROM_SOURCE -> :Source, возвращая алиас sources.
+
+    Query-shape гейт: серверную фильтрацию нельзя проверить через mock (mock
+    возвращает строки как есть, без реальной обработки WHERE), поэтому
+    проверяется наличие фильтра/джойна в тексте самого запроса.
+    """
+    from src.engine.kb_client import _SCHEMA_05  # noqa: PLC0415
+
+    assert "f.si >= 0.5" in _SCHEMA_05, (
+        "_SCHEMA_05 должен фильтровать факты по si >= 0.5 (D-04)"
+    )
+    assert "FROM_SOURCE" in _SCHEMA_05, (
+        "_SCHEMA_05 должен джойнить :FROM_SOURCE в том же проходе (D-05)"
+    )
+    assert "sources" in _SCHEMA_05, (
+        "_SCHEMA_05 должен возвращать алиас sources (D-05)"
+    )
+
+
+# ── Тест 10: заголовок панели показывает взвешенный si (D-06) ────────────────
+
+def test_format_facts_weighted_header():
+    """D-06: заголовок и ERS-уровень используют importance-взвешенный si
+    (Critical=3/Major=2/Minor=1), а не плоское среднее.
+
+    Fixture: Critical(si=0.9) + Minor(si=0.5) -> взвешенное (0.9*3+0.5*1)/4=0.80,
+    плоское среднее было бы 0.70. 0.80 пересекает порог >=0.8 (уровень 5),
+    0.70 остался бы на уровне 4 -- разница доказывает, что взвешивание живое.
+    """
+    from src.engine.kb_client import _format_facts  # noqa: PLC0415
+
+    facts = [
+        {"subject": "omega-3", "predicate": "reduces", "object": "inflammation",
+         "si": 0.9, "wi": 0.9, "importance": "Critical", "sources": []},
+        {"subject": "omega-3", "predicate": "supports", "object": "cognition",
+         "si": 0.5, "wi": 0.5, "importance": "Minor", "sources": []},
+    ]
+    client = _make_mock_client()
+
+    text = _format_facts(facts, "omega3", client)
+
+    assert "Средневзвешенный si" in text, (
+        "Заголовок должен содержать литерал 'Средневзвешенный si' (D-06)"
+    )
+    assert "0.80" in text, (
+        "Заголовок должен показывать взвешенное значение 0.80, а не плоское среднее 0.70"
+    )
+
+    level = client.compute_ers_level(facts)
+    assert level == 5, (
+        "Взвешенный si=0.80 пересекает порог >=0.8 -> уровень 5 "
+        "(плоское среднее 0.70 дало бы уровень 4)"
+    )
+
+
+# ── Тест 11: провенанс источника в тексте факта (D-05) ────────────────────────
+
+def test_format_facts_source_provenance():
+    """D-05: каждый факт несёт метку источника с кардинальностью 0/1/N."""
+    from src.engine.kb_client import _format_facts  # noqa: PLC0415
+
+    client = _make_mock_client()
+
+    # 1 источник -> заголовок источника
+    facts_one = [
+        {"subject": "omega-3", "predicate": "reduces", "object": "triglycerides",
+         "si": 0.9, "wi": 0.9, "importance": "Major",
+         "sources": [{"url": "https://doi.org/x", "title": "Study A"}]},
+    ]
+    text_one = _format_facts(facts_one, "omega3", client)
+    fact_line_one = text_one.strip().split("\n")[-1]
+    assert fact_line_one.endswith("[Источник: Study A]"), (
+        f"Факт с одним источником должен заканчиваться на '[Источник: Study A]', получено: {fact_line_one!r}"
+    )
+
+    # 0 источников -- OPTIONAL MATCH не нашёл :Source, sources=[{"url": None, "title": None}]
+    facts_none = [
+        {"subject": "omega-3", "predicate": "reduces", "object": "triglycerides",
+         "si": 0.9, "wi": 0.9, "importance": "Major",
+         "sources": [{"url": None, "title": None}]},
+    ]
+    text_none = _format_facts(facts_none, "omega3", client)
+    fact_line_none = text_none.strip().split("\n")[-1]
+    assert fact_line_none.endswith("[Источник: не указан]"), (
+        f"Факт без источника должен заканчиваться на '[Источник: не указан]', получено: {fact_line_none!r}"
+    )
+
+    # N>1 источников -- первый титул + "и ещё N-1"
+    facts_many = [
+        {"subject": "omega-3", "predicate": "reduces", "object": "triglycerides",
+         "si": 0.9, "wi": 0.9, "importance": "Major",
+         "sources": [
+             {"url": "https://doi.org/x", "title": "Study A"},
+             {"url": "https://doi.org/y", "title": "Study B"},
+         ]},
+    ]
+    text_many = _format_facts(facts_many, "omega3", client)
+    fact_line_many = text_many.strip().split("\n")[-1]
+    assert "и ещё 1" in fact_line_many, (
+        f"Факт с 2 источниками должен содержать 'и ещё 1', получено: {fact_line_many!r}"
+    )
+
+
+# ── Тест 12: пустой predicate/object без болтающихся стрелок (Pitfall 5) ──────
+
+def test_format_facts_empty_predicate():
+    """Pitfall 5 / D-05: факт с пустым predicate/object рендерится как
+    '{subject} (si=...) [Источник: ...]' без болтающихся ' -> -> '.
+    """
+    from src.engine.kb_client import _format_facts  # noqa: PLC0415
+
+    client = _make_mock_client()
+    facts = [
+        {"subject": "омега-3 снижает риск ССЗ по данным метаанализа", "predicate": "", "object": "",
+         "si": 1.0, "wi": 1.0, "importance": "Major",
+         "sources": [{"url": "https://doi.org/z", "title": "Study Z"}]},
+    ]
+    text = _format_facts(facts, "omega3", client)
+    fact_line = text.strip().split("\n")[-1]
+
+    assert "→" not in fact_line, (
+        f"Не должно быть болтающихся стрелок для пустых predicate/object, получено: {fact_line!r}"
+    )
+    assert fact_line.startswith("омега-3 снижает риск ССЗ по данным метаанализа (si=1.00)"), (
+        f"Факт должен начинаться с '{{subject}} (si=1.00)', получено: {fact_line!r}"
+    )
+    assert fact_line.endswith("[Источник: Study Z]"), (
+        f"Факт должен заканчиваться провенансом источника, получено: {fact_line!r}"
+    )

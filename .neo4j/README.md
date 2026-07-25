@@ -112,7 +112,6 @@ CREATE CONSTRAINT run_id_unique IF NOT EXISTS FOR (r:SimulationRun) REQUIRE r.ru
 
 -- Indexes
 CREATE INDEX biomarker_category IF NOT EXISTS FOR (b:Biomarker) ON (b.category)
-CREATE INDEX substance_evidence IF NOT EXISTS FOR (s:Substance) ON (s.evidence_level)
 CREATE INDEX organ_name IF NOT EXISTS FOR (o:Organ) ON (o.name)
 ```
 
@@ -159,7 +158,7 @@ RETURN b.code, b.name, b.units ORDER BY b.name
 
 -- Вещества, влияющие на конкретный биомаркер
 MATCH (s:Substance)-[:AFFECTS]->(b:Biomarker {code: 'ldlC'})
-RETURN s.name, s.evidence_level, s.category
+RETURN s.name, s.category
 
 -- Взаимодействия рапамицина
 MATCH (s:Substance {id: 'rapamycin'})-[r:INTERACTS_WITH]->(s2:Substance)

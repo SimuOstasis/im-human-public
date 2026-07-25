@@ -1,0 +1,50 @@
+# Source: pattern synthesized from actions/checkout README (github.com/actions/checkout)
+# + this project's own 09.1-06-SUMMARY.md precedent (Python-based filtering, not shell greps)
+# + .planning/phases/14-address-tech-debt-docs-sync-save-error-handling-ci-merge/14-RESEARCH.md
+#   (Architecture Patterns -> Pattern 1) (D-06..D-09)
+name: Publish public snapshot
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: publish-public
+  cancel-in-progress: false
+
+permissions:
+  contents: read # default GITHUB_TOKEN never used for the cross-repo push — only the scoped PAT is (V14)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout im-human (source)
+        uses: actions/checkout@v7
+        with:
+          path: source
+          persist-credentials: false
+
+      - name: Checkout im-human-public (destination, accumulating history)
+        uses: actions/checkout@v7
+        with:
+          repository: SimuOstasis/im-human-public
+          token: ${{ secrets.PUBLIC_REPO_TOKEN }}
+          path: public
+          persist-credentials: true
+
+      - name: Mirror filtered snapshot into public checkout
+        run: python source/tools/export_public_snapshot.py --source source --dest public
+
+      - name: Commit and push if changed
+        working-directory: public
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No public-facing changes — skipping commit."
+            exit 0
+          fi
+          git commit -m "chore: sync public snapshot from im-human@${{ github.sha }}"
+          git push

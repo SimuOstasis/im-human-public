@@ -27,6 +27,7 @@ load_dotenv()
 
 try:
     from neo4j import GraphDatabase
+    from neo4j.exceptions import AuthError, ServiceUnavailable
 except ImportError:
     print("[ERROR] neo4j package not found. Run: pip install neo4j")
     sys.exit(1)
@@ -64,7 +65,6 @@ INDEXES = [
     # (index_name, label, properties)
     ("biomarker_category",    "Biomarker",    ["category"]),
     ("biomarker_status",      "Biomarker",    ["status"]),
-    ("substance_evidence",    "Substance",    ["evidence_level"]),
     ("substance_category",    "Substance",    ["category"]),
     ("organ_name_idx",        "Organ",        ["name"]),
     ("page_section",          "Page",         ["section"]),
@@ -82,6 +82,11 @@ VECTOR_INDEX = {
 
 
 def ensure_constraints(session) -> None:
+    # SAFE: name/label/prop come from the hardcoded CONSTRAINTS module
+    # constant, not user input (T-07-01 parameterization does not apply to
+    # identifiers here — Cypher cannot parameterize labels/property names
+    # anyway). If these were ever sourced from external config, this
+    # f-string interpolation would need re-evaluating (IN-06).
     for name, label, prop in CONSTRAINTS:
         cypher = (
             f"CREATE CONSTRAINT {name} IF NOT EXISTS "
@@ -92,6 +97,8 @@ def ensure_constraints(session) -> None:
 
 
 def ensure_indexes(session) -> None:
+    # SAFE: name/label/props are hardcoded module constants (INDEXES), not
+    # user input (T-07-01 n/a here — see ensure_constraints above, IN-06).
     for name, label, props in INDEXES:
         props_str = ", ".join(f"n.{p}" for p in props)
         cypher = (
@@ -103,6 +110,8 @@ def ensure_indexes(session) -> None:
 
 
 def ensure_vector_index(session) -> None:
+    # SAFE: VECTOR_INDEX is a hardcoded module constant, not user input
+    # (T-07-01 n/a here — see ensure_constraints above, IN-06).
     vi = VECTOR_INDEX
     cypher = f"""
     CREATE VECTOR INDEX {vi['name']} IF NOT EXISTS
@@ -142,7 +151,8 @@ def main() -> None:
                         help="DELETE ALL DATA before creating schema (destructive!)")
     args = parser.parse_args()
 
-    print(f"[INFO] Connecting to {NEO4J_URI} / database={NEO4J_DATABASE}")
+    # T-07-03: do not log the URI (may embed an internal host/IP)
+    print(f"[INFO] Connecting to Neo4j / database={NEO4J_DATABASE}")
     driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
 
     try:
@@ -171,6 +181,14 @@ def main() -> None:
 
         print("\n[DONE] Schema setup complete.")
 
+    except ServiceUnavailable:
+        # T-07-03: do not log password or URI details
+        print("[ERROR] Neo4j is unavailable. Check that the database is running.", file=sys.stderr)
+        sys.exit(1)
+    except AuthError:
+        # T-07-03: do not log credentials
+        print("[ERROR] Neo4j authentication failed. Check NEO4J_USER/NEO4J_PASSWORD in .neo4j/.env.", file=sys.stderr)
+        sys.exit(1)
     finally:
         driver.close()
 

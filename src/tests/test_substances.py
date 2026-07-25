@@ -31,7 +31,7 @@ _EXPECTED_IDS = [
 
 # Required top-level fields in every substance entry (D-02, D-05, ingest_substances.py schema)
 _REQUIRED_FIELDS = [
-    "id", "name", "name_ru", "category", "evidenceLevel",
+    "id", "name", "name_ru", "category",
     "doseUnit", "minDose", "maxDose", "defaultDose",
     "bioavailability", "halfLifeHours", "effectProfile", "targetSystems",
 ]

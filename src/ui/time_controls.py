@@ -5,8 +5,14 @@
 
 """TimeControls — панель управления временем симуляции.
 
-Содержит кнопки скорости (x1–x10000), кнопки Запустить/Пауза/Возобновить/Стоп,
+Содержит кнопки скорости (x1–x10000), кнопки Запустить/Пауза/Возобновить/Сброс,
 статус симуляции и счётчик модельного времени.
+
+Кнопка называется «Сброс», не «Стоп»: она необратимо завершает текущий прогон
+(FSM STOPPED терминален, .transition() из него никуда не ведёт) — при следующем
+«Запустить» тики начнутся заново с 0, даже если состояние было Save/Load'нуто
+после «Сброс». Возобновляемая точка сохранения — это «Пауза» (Save после неё
+корректно Resume'ится с того же tick_count через «Возобновить»).
 
 UI-04: Управление временем симуляции.
 D-08: Кнопки скорости в QButtonGroup (checkable, exclusive); speed_changed эмитит multiplier.
@@ -40,8 +46,25 @@ _STATUS_TEXT: dict[SimulationStatus, str] = {
     SimulationStatus.IDLE: "Ожидание",
     SimulationStatus.RUNNING: "Выполняется",
     SimulationStatus.PAUSED: "Приостановлено",
-    SimulationStatus.STOPPED: "Остановлено",
+    SimulationStatus.STOPPED: "Сброшено",
 }
+
+
+def _ru_days(n: int) -> str:
+    """Вернуть правильную форму слова «день» для числительного n (IN-01).
+
+    Стандартное русское склонение: 1, 21, 31... → «день»; 2-4, 22-24... →
+    «дня»; 0, 5-20, 25-30... → «дней» (11-14 — исключение, всегда «дней»).
+    """
+    n_abs = abs(n)
+    if n_abs % 100 in (11, 12, 13, 14):
+        return "дней"
+    last_digit = n_abs % 10
+    if last_digit == 1:
+        return "день"
+    if last_digit in (2, 3, 4):
+        return "дня"
+    return "дней"
 
 
 class TimeControls(QWidget):
@@ -49,14 +72,15 @@ class TimeControls(QWidget):
 
     Содержит:
     - 5 кнопок скорости в QButtonGroup (checkable, exclusive): x1..x10000
-    - Кнопки: «Запустить», «Пауза», «Возобновить», «Стоп»
+    - Кнопки: «Запустить», «Пауза», «Возобновить», «Сброс»
     - QLabel статуса симуляции и модельного времени
 
     Signals (UI-SPEC.md §Signal/Slot Contracts):
         start_requested(object): пользователь нажал «Запустить»
         pause_requested(): пользователь нажал «Пауза»
         resume_requested(): пользователь нажал «Возобновить»
-        stop_requested(): пользователь нажал «Стоп»
+        stop_requested(): пользователь нажал «Сброс» (имя сигнала/слота не менялось,
+            только видимый пользователю текст кнопки — см. модульный docstring)
         speed_changed(int): пользователь выбрал кнопку скорости (значение = множитель)
     """
 
@@ -69,6 +93,11 @@ class TimeControls(QWidget):
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
+
+        # D-04: последний статус, для которого реально выполнялся repolish
+        # QSS кнопок в _apply_button_states — None означает «ещё ни разу»,
+        # так что самый первый вызов (из __init__ ниже) всегда реполирует.
+        self._last_applied_status: SimulationStatus | None = None
 
         # Корневой макет: вертикальный (строка кнопок управления + строка статуса)
         root_layout = QVBoxLayout(self)
@@ -110,9 +139,14 @@ class TimeControls(QWidget):
         self.resume_btn.setVisible(False)
         controls_layout.addWidget(self.resume_btn)
 
-        # Кнопка «Стоп»
-        self.stop_btn = QPushButton("Стоп")
-        controls_layout.addWidget(self.stop_btn)
+        # «Сброс» больше не показывается как кнопка на панели — вместо неё
+        # MainWindow добавляет пункт «Новая» в меню «Файл» (тот же confirm-
+        # диалог и обработчик). stop_btn остаётся как внутренний, невидимый
+        # держатель enabled/disabled-состояния (см. _apply_button_states) —
+        # MainWindow читает stop_btn.isEnabled() вместо дублирования таблицы
+        # состояний. Явно parent'им, раз он не добавляется в layout.
+        self.stop_btn = QPushButton("Сброс", self)
+        self.stop_btn.setVisible(False)
 
         root_layout.addLayout(controls_layout)
 
@@ -169,10 +203,19 @@ class TimeControls(QWidget):
         │ Запустить       │  вкл  │  откл   │  откл  │   вкл   │
         │ Пауза           │  откл │  вкл    │ скрыта │  откл   │
         │ Возобновить     │ скрыт │  скрыт  │  вкл   │  скрыт  │
-        │ Стоп            │  откл │  вкл    │  вкл   │  откл   │
+        │ Сброс           │  откл │  вкл    │  вкл   │  откл   │
         │ Кнопки скорости │  вкл  │  вкл    │  откл  │   вкл   │
         └─────────────────┴───────┴─────────┴────────┴─────────┘
+
+        D-04: repolish (unpolish/polish) 4 кнопок выполняется только когда
+        `status` реально отличается от последнего применённого — иначе это
+        полная переоценка QSS 5 раз/с без визуальных изменений (MainWindow
+        зовёт update_status на каждом эмите state_updated в обход throttle).
+        Ветки setEnabled/setVisible/setProperty ниже остаются безусловными —
+        они дешёвые и должны отражать актуальный статус каждый вызов.
         """
+        status_changed = status != self._last_applied_status
+
         if status == SimulationStatus.IDLE:
             self.start_btn.setEnabled(True)
             self.start_btn.setProperty("primary", True)
@@ -211,10 +254,14 @@ class TimeControls(QWidget):
             self.stop_btn.setEnabled(False)
             self._set_speed_buttons_enabled(True)
 
-        # Переполировать кнопки для QSS-перерисовки
-        for btn in (self.start_btn, self.pause_btn, self.resume_btn, self.stop_btn):
-            btn.style().unpolish(btn)
-            btn.style().polish(btn)
+        # D-04: переполировать кнопки для QSS-перерисовки только при реальной
+        # смене статуса — иначе безусловный repolish 4 кнопок при каждом
+        # вызове update_status (до 5 раз/с) впустую переоценивает QSS.
+        if status_changed:
+            for btn in (self.start_btn, self.pause_btn, self.resume_btn, self.stop_btn):
+                btn.style().unpolish(btn)
+                btn.style().polish(btn)
+            self._last_applied_status = status
 
     def _set_speed_buttons_enabled(self, enabled: bool) -> None:
         """Включает или отключает все кнопки скорости."""
@@ -237,7 +284,7 @@ class TimeControls(QWidget):
 
         # Обновить модельное время
         days = tick_count // 24
-        self.elapsed_label.setText(f"Модельное время: {days} дней")
+        self.elapsed_label.setText(f"Модельное время: {days} {_ru_days(days)}")
 
         # Обновить состояния кнопок
         self._apply_button_states(status)

@@ -6,12 +6,22 @@
 """
 Тесты для фазы 08: проверка наличия и содержимого wiki-страниц документации.
 GAP-01..GAP-05 — требования DOCS-05..DOCS-09.
+
+Также содержит регрессионные тесты фазы 10 (HS-04, задача 10-04-01):
+числовые утверждения в README.md/HOME.md/Known Limitations.md (кол-во
+тестов, веществ, взаимодействий) должны совпадать с живым кодом/данными,
+а не быть захардкожены и потому подверженными дрейфу.
 """
+import json
+import re
+import subprocess
+import sys
 from pathlib import Path
 
 VAULT_ROOT = Path(__file__).parent.parent.parent
 ENGINE_DIR = VAULT_ROOT / "06 - Engine"
 ANALYSIS_DIR = VAULT_ROOT / "07 - Analysis"
+DATA_DIR = VAULT_ROOT / "src" / "data"
 
 
 def _read(path: Path) -> str:
@@ -196,4 +206,143 @@ def test_home_md_references_all_8_pages():
     missing = [ref for ref in HOME_PAGE_REFS if ref not in content]
     assert not missing, (
         f"HOME.md не содержит ссылки на страницы: {missing}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Phase 10 (HS-04, task 10-04-01) — live numeric-drift regression tests.
+#
+# These derive the ground truth from live code/data at test-run time
+# (never a hardcoded literal) so that any future change (a new substance,
+# a new interaction, a growing test suite) that isn't reflected in the
+# docs is caught automatically, instead of relying on a one-time manual
+# audit that goes stale the moment the codebase moves on.
+# ---------------------------------------------------------------------------
+
+def _live_substance_count() -> int:
+    with open(DATA_DIR / "substances.json", encoding="utf-8") as f:
+        return len(json.load(f))
+
+
+def _live_interaction_count() -> int:
+    with open(DATA_DIR / "interactions.json", encoding="utf-8") as f:
+        return len(json.load(f))
+
+
+def _live_collected_test_count() -> int:
+    """Derive the exact live pytest node count via `--collect-only -q`.
+
+    Mirrors the exact method Plan 10-04 used (D-09/Pitfall 5): never trust
+    a number from a planning doc, always re-derive it at execution time.
+    """
+    result = subprocess.run(
+        [sys.executable, "-m", "pytest", str(VAULT_ROOT / "src" / "tests"), "--collect-only", "-q"],
+        capture_output=True,
+        text=True,
+        cwd=str(VAULT_ROOT),
+    )
+    match = re.search(r"(\d+) tests? collected", result.stdout)
+    assert match, (
+        f"Не удалось извлечь количество тестов из вывода --collect-only.\n"
+        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+    )
+    return int(match.group(1))
+
+
+def test_readme_substance_count_matches_data():
+    """README.md заголовок '### Вещества (N)' совпадает с len(substances.json)."""
+    n = _live_substance_count()
+    content = _read(VAULT_ROOT / "README.md")
+    match = re.search(r"Вещества \((\d+)\)", content)
+    assert match, "README.md не содержит заголовок в формате 'Вещества (N)'"
+    assert int(match.group(1)) == n, (
+        f"README.md указывает {match.group(1)} веществ, "
+        f"а src/data/substances.json содержит {n}"
+    )
+
+
+def test_readme_interaction_count_matches_data():
+    """README.md заголовок '...взаимодействия (N)' совпадает с len(interactions.json)."""
+    n = _live_interaction_count()
+    content = _read(VAULT_ROOT / "README.md")
+    match = re.search(r"взаимодействия \((\d+)\)", content)
+    assert match, "README.md не содержит заголовок в формате 'взаимодействия (N)'"
+    assert int(match.group(1)) == n, (
+        f"README.md указывает {match.group(1)} взаимодействий, "
+        f"а src/data/interactions.json содержит {n}"
+    )
+
+
+def test_home_md_substance_count_matches_data():
+    """HOME.md упоминания 'N веществ' совпадают с len(substances.json)."""
+    n = _live_substance_count()
+    content = _read(VAULT_ROOT / "HOME.md")
+    matches = re.findall(r"(\d+)\s+веществ", content)
+    assert matches, "HOME.md не содержит упоминания 'N веществ'"
+    wrong = [m for m in matches if int(m) != n]
+    assert not wrong, (
+        f"HOME.md содержит устаревшие упоминания количества веществ {wrong}, "
+        f"а src/data/substances.json содержит {n}"
+    )
+
+
+def test_known_limitations_interaction_count_matches_data():
+    """Known Limitations.md 'N вручную закодированных взаимодействий' совпадает с данными."""
+    n = _live_interaction_count()
+    content = _read(ANALYSIS_DIR / "Known Limitations.md")
+    match = re.search(r"(\d+)\s+вручную закодированных взаимодействий", content)
+    assert match, (
+        "Known Limitations.md не содержит фразу "
+        "'N вручную закодированных взаимодействий'"
+    )
+    assert int(match.group(1)) == n, (
+        f"Known Limitations.md указывает {match.group(1)} взаимодействий, "
+        f"а src/data/interactions.json содержит {n}"
+    )
+
+
+def test_readme_test_count_matches_live_collection():
+    """README.md указывает ТОЧНОЕ число тестов из живого --collect-only, без '~' приближений."""
+    n = _live_collected_test_count()
+    content = _read(VAULT_ROOT / "README.md")
+
+    assert "~100" not in content, (
+        "README.md всё ещё содержит устаревшее приближение '~100 тестов'"
+    )
+    assert not re.search(r"~\d+\s*тест", content), (
+        "README.md содержит приближённое (не точное) число тестов"
+    )
+
+    occurrences = [m.start() for m in re.finditer(str(n), content)]
+    assert occurrences, (
+        f"README.md не содержит точное живое число тестов ({n}), "
+        f"полученное из 'pytest --collect-only -q'. Возможен дрейф "
+        f"документации относительно живого набора тестов."
+    )
+
+
+def _live_test_file_count() -> int:
+    """Count test_*.py files under src/tests/ (excludes __init__.py).
+
+    D-11 (Phase 14): file-count half of the docs-drift CI gate. Mirrors
+    _live_collected_test_count's discipline — the expected value is
+    derived only from a live glob at test-run time, never a hardcoded
+    literal, so it cannot go stale.
+    """
+    return len(list((VAULT_ROOT / "src" / "tests").glob("test_*.py")))
+
+
+def test_readme_test_file_count_matches_live_directory():
+    """README.md указывает ТОЧНОЕ живое число файлов тестов в src/tests/."""
+    n = _live_test_file_count()
+    content = _read(VAULT_ROOT / "README.md")
+    # Digit-boundary-safe match (Rule 1 fix): a naive substring search for
+    # e.g. "16" would false-positive-match inside an unrelated "163" (test
+    # count), so require the number is not adjacent to other digits.
+    pattern = r"(?<!\d)" + re.escape(str(n)) + r"(?!\d)"
+    occurrences = [m.start() for m in re.finditer(pattern, content)]
+    assert occurrences, (
+        f"README.md не содержит точное живое число файлов тестов ({n}), "
+        f"полученное из живого glob('test_*.py') в src/tests/. Возможен "
+        f"дрейф документации относительно живой директории тестов."
     )

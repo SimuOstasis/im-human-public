@@ -11,6 +11,11 @@
     venv/Scripts/python.exe -O -m pytest src/tests/test_benchmark.py -v
 (флаг -O отключает assertions для максимальной производительности)
 """
+import os
+
+# Установить до любого импорта PySide6 (test_worker_throughput_benchmark,
+# D-05/D-07) — Qt не пытается открыть реальный дисплей (T-06-16).
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from pathlib import Path
 
@@ -84,3 +89,61 @@ def test_aggregation_deviation_under_2pct():
             f"{code}: aggregation deviation {deviation:.1%} > 2%"
             f" (x1={v1:.6f}, x10={v10:.6f})"
         )
+
+
+def test_worker_throughput_benchmark():
+    """Пропускная способность worker.run() (тиков/сек) на x10000 (D-05/D-07).
+
+    Меряет уровень worker.run() (с msleep/yield/sub-batching), НЕ голый
+    engine.tick() — существующий test_benchmark_8760_ticks_under_5_seconds
+    выше меряет только движок и не покрывает эту фазу (10.1-RESEARCH.md
+    Validation Architecture § Test Map, D-05/D-07).
+
+    Без жёсткого числового порога (D-07 явно запрещает машинно-зависимый
+    порог, 10.1-CONTEXT.md) — печатает измеренную пропускную способность
+    для сравнения baseline до/после фиксов D-02..D-06, ассертит только
+    рост tick_count за фиксированное wall-time окно.
+    """
+    import time
+
+    from PySide6.QtCore import QThread
+    from PySide6.QtWidgets import QApplication
+
+    from src.domain.human_profile import HumanProfile
+    from src.ui.worker import SimulationWorker
+
+    app = QApplication.instance() or QApplication([])
+
+    worker = SimulationWorker()
+    profile = HumanProfile.from_preset("middle_age_50f")
+    worker.on_start(profile)
+    worker.on_speed_changed(10000)
+
+    thread = QThread()
+    worker.moveToThread(thread)
+    thread.started.connect(worker.run)
+    thread.start()
+
+    try:
+        tick_before = worker.get_state_snapshot().tick_count
+
+        time.sleep(1.0)
+
+        snapshot_after = worker.get_state_snapshot()
+        tick_after = snapshot_after.tick_count if snapshot_after is not None else tick_before
+
+        delta = tick_after - tick_before
+        print(
+            f"\n[D-05/D-07 benchmark] {delta} тиков за ~1.0с окно на x10000 "
+            f"(baseline измерение до/после фиксов D-02..D-06)"
+        )
+
+        assert delta > 0, (
+            f"tick_count не вырос за 1.0с окно (delta={delta}) — worker.run() не продвигается на x10000"
+        )
+    finally:
+        worker.shutdown()
+        if thread.isRunning():
+            thread.quit()
+            thread.wait(5000)
+        app.processEvents()

@@ -31,6 +31,12 @@ _SEX_DISPLAY = {
     "unspecified": "Не указан",
 }
 
+# Tooltip для индексов симуляции (D-06): статичный текст, ставится один раз в __init__
+_BIO_AGE_TOOLTIP = (
+    "Ориентировочный индекс, а не измеренное значение.\n"
+    "Подробности и ограничения модели — см. '07 - Analysis/Known Limitations.md'."
+)
+
 
 class HumanPanel(QWidget):
     """Панель профиля человека.
@@ -85,13 +91,15 @@ class HumanPanel(QWidget):
 
         self.bio_age_value = QLabel("—")
         self.bio_age_value.setProperty("primary", True)
+        self.bio_age_value.setToolTip(_BIO_AGE_TOOLTIP)
         layout.addRow("Биологический возраст:", self.bio_age_value)
 
         self.resilience_value = QLabel("—")
         self.resilience_value.setProperty("primary", True)
+        self.resilience_value.setToolTip(_BIO_AGE_TOOLTIP)  # D-05: тот же tooltip
         layout.addRow("Индекс устойчивости:", self.resilience_value)
 
-        self._base_age: float = 0.0
+        self._base_age: float | None = None
 
         # Подключить сигнал и выбрать первый пресет
         self.preset_combo.currentIndexChanged.connect(self._on_preset_selected)
@@ -104,13 +112,22 @@ class HumanPanel(QWidget):
         """Загружает пресеты из presets.json и заполняет QComboBox."""
         try:
             data = json.loads(_PRESETS_FILE.read_text(encoding="utf-8"))
-            for preset in data.get("presets", []):
-                display_name = preset.get("display_name", preset["profile_id"])
-                profile_id = preset["profile_id"]
-                self.preset_combo.addItem(display_name, userData=profile_id)
-        except (FileNotFoundError, json.JSONDecodeError, KeyError) as exc:
-            # Fallback — одна заглушка если файл не читается
+        except (FileNotFoundError, json.JSONDecodeError) as exc:
+            # Fallback — одна заглушка если файл целиком не читается
             self.preset_combo.addItem(f"Ошибка загрузки пресетов: {exc}", userData=None)
+            return
+
+        for preset in data.get("presets", []):
+            # IN-03 (10-REVIEW.md): skip just the malformed entry instead of
+            # letting a single missing profile_id (KeyError) abort the whole
+            # loop — previously that silently dropped every preset after
+            # the bad one and mixed a leftover error placeholder into the
+            # combo box alongside valid presets.
+            profile_id = preset.get("profile_id")
+            if not profile_id:
+                continue
+            display_name = preset.get("display_name", profile_id)
+            self.preset_combo.addItem(display_name, userData=profile_id)
 
     def _on_preset_selected(self, index: int) -> None:
         """Обработчик смены пресета. Обновляет QLabel-значения и эмитирует сигнал."""
@@ -120,8 +137,12 @@ class HumanPanel(QWidget):
 
         try:
             profile = HumanProfile.from_preset(preset_id)
-        except KeyError as exc:
-            # T-06-06: защита от неизвестного preset_id
+        except (KeyError, FileNotFoundError, ValueError) as exc:
+            # T-06-06: защита от неизвестного preset_id, а также от
+            # presets.json, исчезнувшего между _load_presets и этим вызовом
+            # (FileNotFoundError), и от структурно некорректной записи
+            # пресета — pydantic.ValidationError наследуется от ValueError
+            # (WR-01, 10-REVIEW.md).
             self.sex_value.setText(f"Не удалось загрузить пресет: {preset_id}")
             self.age_value.setText("—")
             self.height_value.setText("—")
@@ -150,9 +171,21 @@ class HumanPanel(QWidget):
 
     # ── Public API ─────────────────────────────────────────────────────────────
 
+    def emit_current_profile(self) -> None:
+        """Повторно эмитировать profile_changed для уже выбранного пресета.
+
+        IN-02 (10.1-REVIEW.md): публичная замена прямого вызова
+        MainWindow.__init__ в приватные `_on_preset_selected`/`preset_combo`.
+        HumanPanel уже эмитировал profile_changed в своём __init__ до того,
+        как MainWindow успел подключить обработчик — этот метод позволяет
+        MainWindow вручную «прайминговать» self._current_profile без
+        обращения к приватной поверхности класса.
+        """
+        self._on_preset_selected(self.preset_combo.currentIndex())
+
     def update_chrono_age(self, tick_count: int) -> None:
         """Обновить хронологический возраст по числу прошедших тиков (1 тик = 1 час)."""
-        if self._base_age == 0.0:
+        if self._base_age is None:
             return
         years_elapsed = tick_count / (24 * 365.25)
         current_age = self._base_age + years_elapsed
@@ -172,9 +205,9 @@ class HumanPanel(QWidget):
         if biological_age is None:
             self.bio_age_value.setText("—")
         else:
-            self.bio_age_value.setText(f"{biological_age:.1f} лет")
+            self.bio_age_value.setText(f"≈{biological_age:.1f} лет")
 
         if resilience_index is None:
             self.resilience_value.setText("—")
         else:
-            self.resilience_value.setText(f"{resilience_index:.2f}")
+            self.resilience_value.setText(f"≈{resilience_index:.2f}")
