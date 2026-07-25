@@ -2,7 +2,7 @@
 
 ## License
 
-This work is licensed under the Apache License, Version 2.0. See [[LICENSE.txt]] for the full text.
+This work is licensed under the Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt) for the full text.
 
 Copyright © 2026 Vladimir Bazhin. Contact: info@simuostasis.com
 
