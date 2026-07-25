@@ -313,7 +313,13 @@ def test_readme_test_count_matches_live_collection():
         "README.md содержит приближённое (не точное) число тестов"
     )
 
-    occurrences = [m.start() for m in re.finditer(str(n), content)]
+    # Digit-boundary-safe match (Rule 1 fix, mirrors
+    # test_readme_test_file_count_matches_live_directory below): a naive
+    # substring search for e.g. "185" would false-positive-match inside an
+    # unrelated larger number (e.g. "1850"), so require the number is not
+    # adjacent to other digits.
+    pattern = r"(?<!\d)" + re.escape(str(n)) + r"(?!\d)"
+    occurrences = [m.start() for m in re.finditer(pattern, content)]
     assert occurrences, (
         f"README.md не содержит точное живое число тестов ({n}), "
         f"полученное из 'pytest --collect-only -q'. Возможен дрейф "

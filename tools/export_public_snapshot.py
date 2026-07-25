@@ -36,7 +36,7 @@ import sys
 from pathlib import Path
 
 # Exclusion set inherited unchanged from 09.1-06-SUMMARY.md (D-09).
-_EXCLUDED_EXACT_PATHS = {"CLAUDE.md", "AGENTS.md"}
+_EXCLUDED_EXACT_BASENAMES = {"CLAUDE.md", "AGENTS.md"}
 _EXCLUDED_PREFIX = ".planning/"
 _EXCLUDED_GLOB = "*_internal*"
 
@@ -44,11 +44,11 @@ _EXCLUDED_GLOB = "*_internal*"
 def is_excluded(rel_posix_path: str) -> bool:
     """True if `rel_posix_path` (forward-slash-separated, repo-relative) must
     never cross into the public export."""
-    if rel_posix_path in _EXCLUDED_EXACT_PATHS:
+    basename = rel_posix_path.rsplit("/", 1)[-1]
+    if basename in _EXCLUDED_EXACT_BASENAMES:
         return True
     if rel_posix_path.startswith(_EXCLUDED_PREFIX):
         return True
-    basename = rel_posix_path.rsplit("/", 1)[-1]
     if fnmatch.fnmatch(basename, _EXCLUDED_GLOB):
         return True
     if fnmatch.fnmatch(rel_posix_path, _EXCLUDED_GLOB):
@@ -117,9 +117,24 @@ def mirror(source: Path, dest: Path) -> dict[str, int]:
     prune_empty_dirs(dest)
 
     # 2. Copy every included file from source to dest, creating parent dirs.
+    #    Reject symlinks outright (WR-05 fix): shutil.copy2 follows symlinks
+    #    by default and copies the *dereferenced* target's contents, so a
+    #    tracked symlink whose own path passes is_excluded() cleanly could
+    #    still smuggle an excluded file's contents (e.g. log_internal.md,
+    #    .neo4j/.env) into the public mirror — is_excluded() never inspects
+    #    the link target. No symlink is tracked in this repo today, so
+    #    failing closed here costs nothing and closes the bypass by
+    #    construction rather than trying to validate targets case-by-case.
     written = 0
     for rel in included:
         src_file = source / rel
+        if src_file.is_symlink():
+            raise SystemExit(
+                f"Refusing to mirror symlink '{rel}': shutil.copy2 would "
+                "follow it and copy its dereferenced target's contents, "
+                "bypassing path-based exclusion. Untrack or replace with a "
+                "regular file."
+            )
         dest_file = dest / rel
         dest_file.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src_file, dest_file)

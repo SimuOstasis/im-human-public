@@ -20,18 +20,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout im-human (source)
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: source
           persist-credentials: false
 
       - name: Checkout im-human-public (destination, accumulating history)
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: SimuOstasis/im-human-public
           token: ${{ secrets.PUBLIC_REPO_TOKEN }}
           path: public
           persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.11'
 
       - name: Mirror filtered snapshot into public checkout
         run: python source/tools/export_public_snapshot.py --source source --dest public

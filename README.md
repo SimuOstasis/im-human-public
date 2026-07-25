@@ -115,7 +115,7 @@ flowchart TB
 | Валидация | Pydantic v2 | Типобезопасные модели данных (HumanProfile, SimulationState) |
 | Вики | Obsidian (Markdown) | База знаний о биомаркерах, веществах, движке |
 | Граф/Векторная база | Neo4j | Граф связей + семантический поиск (384d эмбеддинги) |
-| Тесты | pytest | 16 тест-файлов, 185 тестов |
+| Тесты | pytest | 17 тест-файлов, 195 тестов |
 
 ### Хранение данных (DUAL-LAYER, ADR-002)
 
@@ -256,7 +256,7 @@ python src/main.py
 
 ## Запуск тестов
 
-### Полный тест-сьют (185 тестов, 16 файлов)
+### Полный тест-сьют (195 тестов, 17 файлов)
 
 ```powershell
 venv\Scripts\python.exe -m pytest src/tests/ -v
@@ -291,6 +291,11 @@ venv\Scripts\python.exe -m pytest src/tests/ -v
 | `test_ui_integration.py` | UI-виджеты PySide6 в offscreen-режиме |
 | `test_export_import.py` | Round-trip экспорт/импорт — 100+50 тиков идентичны 150 тикам |
 | `test_phase08_docs.py` | Синхронизация документации (вики ↔ код/данные) |
+| `test_evidence_removal.py` | Регрессионный гейт — уровень доказательности вещества не возвращается в Human DB |
+| `test_mortality_slug.py` | Регрессионный гейт — SUBSTANCE_SLUG_MAP указывает на content-страницы Mortality KB |
+| `test_pacing.py` | Wall-clock пейсинг SimulationWorker.run() на x1 и высоких множителях |
+| `test_substance_ers_badge.py` | ERS-звёзды (уровень доказательности) в списке веществ |
+| `test_export_public_snapshot.py` | Экспортёр публичного снапшота — is_excluded/mirror/assert_no_leak |
 
 ---
 
@@ -302,7 +307,7 @@ src/
   engine/          # Движок симуляции (PK, гомеостаз, взаимодействия, экспорт)
   ui/              # PySide6 виджеты (главное окно, панели, дашборд)
   data/            # JSON-конфиги (вещества, биомаркеры, пресеты, референсы)
-  tests/           # 16 pytest тест-файлов
+  tests/           # 17 pytest тест-файлов
 .neo4j/            # Neo4j скрипты (ingest, query, schema, backup/restore)
 Assets/            # Иллюстрации для документации
 06 - Engine/       # Вики — документация алгоритмов движка (+ цикл тика)
