@@ -62,6 +62,24 @@ GITHUB_BLOB_BASE = f"https://github.com/{PUBLIC_REPO}/blob/master/"
 # `[[target]]` or `[[target\|display]]` / `[[target|display]]`.
 _WIKILINK_RE = re.compile(r"\[\[([^\[\]|]+?)(?:\\?\|([^\[\]]+?))?\]\]")
 
+# A leading YAML frontmatter block, delimited by `---` lines.
+_FRONTMATTER_RE = re.compile(r"\A---\r?\n(.*?)\r?\n---\r?\n", re.DOTALL)
+
+
+def fence_frontmatter(text: str) -> str:
+    """GitHub's Code-tab preview silently hides a leading `---`-delimited
+    YAML frontmatter block (the Jekyll convention), but Gollum does not —
+    it renders the raw lines as one merged paragraph, and the closing
+    `---` then turns that whole paragraph into a giant setext H2 heading.
+    Wrap the frontmatter in a fenced code block instead, so every wiki
+    page renders it as inert metadata rather than a heading."""
+    m = _FRONTMATTER_RE.match(text)
+    if not m:
+        return text
+    body = m.group(1)
+    rest = text[m.end():]
+    return f"```yaml\n{body}\n```\n\n{rest}"
+
 
 def discover_doc_files(source: Path) -> list[Path]:
     files: list[Path] = []
@@ -120,7 +138,7 @@ def build_doc_target_names(doc_path_set: set[Path], source: Path) -> tuple[set[s
 
 def rewrite_file(f: Path, source: Path, doc_stems: set[str], doc_qualified: set[str],
                   folder_map: dict[str, Path], repo_file_index: dict[str, Path]) -> str:
-    text = f.read_text(encoding="utf-8")
+    text = fence_frontmatter(f.read_text(encoding="utf-8"))
     out_lines = []
     for line in text.split("\n"):
         def repl(m: re.Match[str]) -> str:
