@@ -160,11 +160,11 @@ Copyright © 2026 Vladimir Bazhin. Contact: info@simuostasis.com
 ## Системные файлы
 
 - [README](README.md) — обзор проекта, установка, запуск, **раздел «Как это работает» для новичков**
-- [CLAUDE](CLAUDE.md) — правила работы
+- CLAUDE — правила работы
 - [MILESTONES](MILESTONES.md) — план разработки
 - [LICENSE.txt](LICENSE.txt) — лицензия Apache 2.0
 - [log](log.md) — хронологический лог (публичный)
-- [.neo4j/README](.neo4j/README.md) — Neo4j документация
+- [README](.neo4j/README.md) — Neo4j документация
 - [src/README.md](src/README.md) — документация кода
 
 ---

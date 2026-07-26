@@ -38,6 +38,9 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Convert [[wikilinks]] to relative Markdown links (Code rendering)
+        run: python source/tools/convert_links_for_code.py --source source
+
       - name: Mirror filtered snapshot into public checkout
         run: python source/tools/export_public_snapshot.py --source source --dest public
 
