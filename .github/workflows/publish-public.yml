@@ -53,3 +53,41 @@ jobs:
           fi
           git commit -m "chore: sync public snapshot from im-human@${{ github.sha }}"
           git push
+
+  publish-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout im-human (source)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: source
+          persist-credentials: false
+
+      - name: Checkout im-human-public.wiki (destination, accumulating history)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: SimuOstasis/im-human-public.wiki
+          token: ${{ secrets.PUBLIC_REPO_TOKEN }}
+          path: wiki
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.11'
+
+      - name: Export doc/wiki pages with Gollum-style [[wikilinks]]
+        run: python source/tools/export_wiki.py --source source --dest wiki
+
+      - name: Commit and push if changed
+        working-directory: wiki
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No wiki-facing changes — skipping commit."
+            exit 0
+          fi
+          git commit -m "chore: sync wiki pages from im-human@${{ github.sha }}"
+          git push
