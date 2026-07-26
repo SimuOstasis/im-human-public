@@ -59,8 +59,10 @@ ASSETS_DIR = "Assets"
 PUBLIC_REPO = "SimuOstasis/im-human-public"
 GITHUB_BLOB_BASE = f"https://github.com/{PUBLIC_REPO}/blob/master/"
 
-# `[[target]]` or `[[target\|display]]` / `[[target|display]]`.
-_WIKILINK_RE = re.compile(r"\[\[([^\[\]|]+?)(?:\\?\|([^\[\]]+?))?\]\]")
+# `[[target]]` or `[[target\|display]]` / `[[target|display]]`. Group 2
+# captures the optional backslash so the escaping style (needed inside
+# table cells, CLAUDE.md convention) can be preserved when re-emitting.
+_WIKILINK_RE = re.compile(r"\[\[([^\[\]|]+?)(?:(\\)?\|([^\[\]]+?))?\]\]")
 
 # A leading YAML frontmatter block, delimited by `---` lines.
 _FRONTMATTER_RE = re.compile(r"\A---\r?\n(.*?)\r?\n---\r?\n", re.DOTALL)
@@ -142,7 +144,8 @@ def rewrite_file(f: Path, source: Path, doc_stems: set[str], doc_qualified: set[
     out_lines = []
     for line in text.split("\n"):
         def repl(m: re.Match[str]) -> str:
-            target, display = m.group(1), m.group(2)
+            target, backslash, display = m.group(1), m.group(2), m.group(3)
+            pipe = "\\|" if backslash else "|"
             if target.startswith("mortality:"):
                 return m.group(0)
             if "{{" in target or "}}" in target:
@@ -156,9 +159,16 @@ def rewrite_file(f: Path, source: Path, doc_stems: set[str], doc_qualified: set[
             key = target.rstrip("/").split("/")[-1]
 
             # A real doc page (bare name or qualified path) — Gollum
-            # resolves [[Page]] natively; leave completely untouched.
+            # resolves it natively, but its [[...|...]] link syntax is
+            # MediaWiki-order (display FIRST, page-name SECOND) — the
+            # opposite of Obsidian's [[target|display]]. Passing an
+            # Obsidian-order link through unchanged makes Gollum treat the
+            # *display text* as the target page name (and try to create a
+            # nonexistent page for it), so the two parts must be swapped.
             if target in doc_qualified or key in doc_stems:
-                return m.group(0)
+                if display is None:
+                    return m.group(0)
+                return f"[[{display}{pipe}{target}]]"
 
             disp = display if display else key
             candidate = repo_file_index.get(key)
