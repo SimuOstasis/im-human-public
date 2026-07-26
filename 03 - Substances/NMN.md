@@ -42,9 +42,9 @@ tags: [substance, supplement, nmn]
 
 | Биомаркер | Направление | Дельта/тик (100% конц.) | Ссылка |
 |-----------|------------|------------------------|--------|
-| [[02 - Biomarkers/13 - Telemetry/HRV RMSSD\|HRV (RMSSD)]] | ↑ | +0.00030 | — |
-| [[02 - Biomarkers/03 - Inflammation/hs-CRP\|Высокочувствительный СРБ]] | ↓ | -0.00050 | — |
-| [[02 - Biomarkers/02 - Glucose/Fasting Glucose\|Глюкоза натощак]] | ↓ | -0.00100 | — |
+| [HRV (RMSSD)](../02%20-%20Biomarkers/13%20-%20Telemetry/HRV%20RMSSD.md) | ↑ | +0.00030 | — |
+| [Высокочувствительный СРБ](../02%20-%20Biomarkers/03%20-%20Inflammation/hs-CRP.md) | ↓ | -0.00050 | — |
+| [Глюкоза натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Glucose.md) | ↓ | -0.00100 | — |
 
 > *Дельты — абсолютные изменения на 1 тик при 100% терапевтической концентрации. Движок Phase 5 масштабирует: applied_delta = delta × C(t)/Tmax*
 
@@ -52,7 +52,7 @@ tags: [substance, supplement, nmn]
 
 ## Взаимодействия
 
-Полная матрица: [[04 - Interactions/Interactions Index]]
+Полная матрица: [Interactions Index](../04%20-%20Interactions/Interactions%20Index.md)
 
 *(взаимодействий с другими MVP-веществами нет)*
 
@@ -60,9 +60,9 @@ tags: [substance, supplement, nmn]
 
 ## Связанные страницы
 
-- [[02 - Biomarkers/13 - Telemetry/HRV RMSSD\|HRV (RMSSD)]]
-- [[02 - Biomarkers/03 - Inflammation/hs-CRP\|Высокочувствительный СРБ]]
-- [[02 - Biomarkers/02 - Glucose/Fasting Glucose\|Глюкоза натощак]]
+- [HRV (RMSSD)](../02%20-%20Biomarkers/13%20-%20Telemetry/HRV%20RMSSD.md)
+- [Высокочувствительный СРБ](../02%20-%20Biomarkers/03%20-%20Inflammation/hs-CRP.md)
+- [Глюкоза натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Glucose.md)
 
 ---
 

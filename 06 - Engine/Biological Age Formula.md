@@ -65,6 +65,6 @@ Resilience_index влияет на скорость гомеостатическ
 
 ## Ссылки
 
-- [[Albumin]] — albumin страница
-- [[eGFR]] — eGFR страница
-- [[Pharmacokinetics Model]] — PK-модель движка
+- [Albumin](../02%20-%20Biomarkers/04%20-%20Liver/Albumin.md) — albumin страница
+- [eGFR](../02%20-%20Biomarkers/05%20-%20Kidney/eGFR.md) — eGFR страница
+- [Pharmacokinetics Model](Pharmacokinetics%20Model.md) — PK-модель движка

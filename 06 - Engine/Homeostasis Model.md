@@ -112,7 +112,7 @@ recovery = 0 × 0.00005 × 0.7 × 1.1 = 0
 
 ## Ссылки
 
-- [[06 - Engine/Pharmacokinetics Model]] — PK-модель, концентрации веществ, которые влияют на биомаркеры через effectProfile
-- [[06 - Engine/Interaction Resolver]] — синергии и антагонизмы между веществами, меняющие дельты биомаркеров
-- [[02 - Biomarkers/01 - Lipids/LDL Cholesterol]] — пример биомаркера с дрейфом в high_risk зону
-- [[06 - Engine/Biological Age Formula]] — формула биологического возраста, зависящая от накопленного дрейфа
+- [Pharmacokinetics Model](Pharmacokinetics%20Model.md) — PK-модель, концентрации веществ, которые влияют на биомаркеры через effectProfile
+- [Interaction Resolver](Interaction%20Resolver.md) — синергии и антагонизмы между веществами, меняющие дельты биомаркеров
+- [LDL Cholesterol](../02%20-%20Biomarkers/01%20-%20Lipids/LDL%20Cholesterol.md) — пример биомаркера с дрейфом в high_risk зону
+- [Biological Age Formula](Biological%20Age%20Formula.md) — формула биологического возраста, зависящая от накопленного дрейфа

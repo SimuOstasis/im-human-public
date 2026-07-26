@@ -15,7 +15,7 @@ tags: [biomarker, mvp, inflammation]
 
 # Интерлейкин-6 (`il6`)
 
-> **Единицы:** pg/mL | **Статус:** Research | **Категория:** [[02 - Biomarkers/03 - Inflammation/\|Воспаление]]
+> **Единицы:** pg/mL | **Статус:** Research | **Категория:** [Воспаление](./)
 
 ---
 
@@ -50,7 +50,7 @@ tags: [biomarker, mvp, inflammation]
 
 *(Все биомаркеры категории «Воспаление»)*
 
-- [[02 - Biomarkers/03 - Inflammation/hs-CRP\|Высокочувствительный СРБ]] (`hsCrp`)
+- [Высокочувствительный СРБ](hs-CRP.md) (`hsCrp`)
 
 ---
 
@@ -58,7 +58,7 @@ tags: [biomarker, mvp, inflammation]
 
 | Вещество | Эффект | Дельта/тик |
 |---------|--------|-----------|
-| [[03 - Substances/Rapamycin\|Рапамицин]] | ↓ | -0.00100 |
+| [Рапамицин](../../03%20-%20Substances/Rapamycin.md) | ↓ | -0.00100 |
 
 > *Дельты при 100% концентрации за 1 тик. Источник: substances.json (Phase 4)*
 

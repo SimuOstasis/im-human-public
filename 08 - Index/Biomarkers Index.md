@@ -17,10 +17,10 @@ created: 2026-06-20
 
 | Биомаркер | Код | Единицы | Статус | Страница |
 |-----------|-----|---------|--------|---------|
-| Холестерин ЛПНП | `ldlC` | mmol/L | Clinical | [[02 - Biomarkers/01 - Lipids/LDL Cholesterol\|ссылка]] |
-| Холестерин ЛПВП | `hdlC` | mmol/L | Clinical | [[02 - Biomarkers/01 - Lipids/HDL Cholesterol\|ссылка]] |
-| Триглицериды | `triglycerides` | mmol/L | Clinical | [[02 - Biomarkers/01 - Lipids/Triglycerides\|ссылка]] |
-| Аполипопротеин B | `apoB` | g/L | Extended | [[02 - Biomarkers/01 - Lipids/Apolipoprotein B\|ссылка]] |
+| Холестерин ЛПНП | `ldlC` | mmol/L | Clinical | [ссылка](../02%20-%20Biomarkers/01%20-%20Lipids/LDL%20Cholesterol.md) |
+| Холестерин ЛПВП | `hdlC` | mmol/L | Clinical | [ссылка](../02%20-%20Biomarkers/01%20-%20Lipids/HDL%20Cholesterol.md) |
+| Триглицериды | `triglycerides` | mmol/L | Clinical | [ссылка](../02%20-%20Biomarkers/01%20-%20Lipids/Triglycerides.md) |
+| Аполипопротеин B | `apoB` | g/L | Extended | [ссылка](../02%20-%20Biomarkers/01%20-%20Lipids/Apolipoprotein%20B.md) |
 
 ---
 
@@ -28,10 +28,10 @@ created: 2026-06-20
 
 | Биомаркер | Код | Единицы | Статус | Страница |
 |-----------|-----|---------|--------|---------|
-| Глюкоза натощак | `fastingGlucose` | mmol/L | Clinical | [[02 - Biomarkers/02 - Glucose/Fasting Glucose\|ссылка]] |
-| Инсулин натощак | `fastingInsulin` | mcU/mL | Clinical | [[02 - Biomarkers/02 - Glucose/Fasting Insulin\|ссылка]] |
-| Индекс HOMA-IR | `homaIr` | ratio | Calculated | [[02 - Biomarkers/02 - Glucose/HOMA-IR\|ссылка]] |
-| HbA1c | `hba1c` | % | Clinical | [[02 - Biomarkers/02 - Glucose/HbA1c\|ссылка]] |
+| Глюкоза натощак | `fastingGlucose` | mmol/L | Clinical | [ссылка](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Glucose.md) |
+| Инсулин натощак | `fastingInsulin` | mcU/mL | Clinical | [ссылка](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Insulin.md) |
+| Индекс HOMA-IR | `homaIr` | ratio | Calculated | [ссылка](../02%20-%20Biomarkers/02%20-%20Glucose/HOMA-IR.md) |
+| HbA1c | `hba1c` | % | Clinical | [ссылка](../02%20-%20Biomarkers/02%20-%20Glucose/HbA1c.md) |
 
 ---
 
@@ -39,8 +39,8 @@ created: 2026-06-20
 
 | Биомаркер | Код | Единицы | Статус | Страница |
 |-----------|-----|---------|--------|---------|
-| Высокочувствительный СРБ | `hsCrp` | mg/L | Clinical | [[02 - Biomarkers/03 - Inflammation/hs-CRP\|ссылка]] |
-| Интерлейкин-6 | `il6` | pg/mL | Research | [[02 - Biomarkers/03 - Inflammation/Interleukin-6\|ссылка]] |
+| Высокочувствительный СРБ | `hsCrp` | mg/L | Clinical | [ссылка](../02%20-%20Biomarkers/03%20-%20Inflammation/hs-CRP.md) |
+| Интерлейкин-6 | `il6` | pg/mL | Research | [ссылка](../02%20-%20Biomarkers/03%20-%20Inflammation/Interleukin-6.md) |
 
 ---
 
@@ -48,10 +48,10 @@ created: 2026-06-20
 
 | Биомаркер | Код | Единицы | Статус | Страница |
 |-----------|-----|---------|--------|---------|
-| АЛТ | `alt` | U/L | Clinical | [[02 - Biomarkers/04 - Liver/ALT\|ссылка]] |
-| АСТ | `ast` | U/L | Clinical | [[02 - Biomarkers/04 - Liver/AST\|ссылка]] |
-| ГГТ | `ggt` | U/L | Clinical | [[02 - Biomarkers/04 - Liver/GGT\|ссылка]] |
-| Альбумин | `albumin` | g/L | Clinical | [[02 - Biomarkers/04 - Liver/Albumin\|ссылка]] |
+| АЛТ | `alt` | U/L | Clinical | [ссылка](../02%20-%20Biomarkers/04%20-%20Liver/ALT.md) |
+| АСТ | `ast` | U/L | Clinical | [ссылка](../02%20-%20Biomarkers/04%20-%20Liver/AST.md) |
+| ГГТ | `ggt` | U/L | Clinical | [ссылка](../02%20-%20Biomarkers/04%20-%20Liver/GGT.md) |
+| Альбумин | `albumin` | g/L | Clinical | [ссылка](../02%20-%20Biomarkers/04%20-%20Liver/Albumin.md) |
 
 ---
 
@@ -59,11 +59,11 @@ created: 2026-06-20
 
 | Биомаркер | Код | Единицы | Статус | Страница |
 |-----------|-----|---------|--------|---------|
-| Креатинин | `creatinine` | umol/L | Clinical | [[02 - Biomarkers/05 - Kidney/Serum Creatinine\|ссылка]] |
-| Расчётная СКФ | `egfr` | mL/min/1.73m2 | Calculated | [[02 - Biomarkers/05 - Kidney/eGFR\|ссылка]] |
-| UACR | `urineAlbuminCreatinineRatio` | mg/g | Clinical | [[02 - Biomarkers/05 - Kidney/UACR\|ссылка]] |
-| Натрий | `sodium` | mmol/L | Clinical | [[02 - Biomarkers/05 - Kidney/Sodium\|ссылка]] |
-| Калий | `potassium` | mmol/L | Clinical | [[02 - Biomarkers/05 - Kidney/Potassium\|ссылка]] |
+| Креатинин | `creatinine` | umol/L | Clinical | [ссылка](../02%20-%20Biomarkers/05%20-%20Kidney/Serum%20Creatinine.md) |
+| Расчётная СКФ | `egfr` | mL/min/1.73m2 | Calculated | [ссылка](../02%20-%20Biomarkers/05%20-%20Kidney/eGFR.md) |
+| UACR | `urineAlbuminCreatinineRatio` | mg/g | Clinical | [ссылка](../02%20-%20Biomarkers/05%20-%20Kidney/UACR.md) |
+| Натрий | `sodium` | mmol/L | Clinical | [ссылка](../02%20-%20Biomarkers/05%20-%20Kidney/Sodium.md) |
+| Калий | `potassium` | mmol/L | Clinical | [ссылка](../02%20-%20Biomarkers/05%20-%20Kidney/Potassium.md) |
 
 ---
 
@@ -71,7 +71,7 @@ created: 2026-06-20
 
 | Биомаркер | Код | Единицы | Статус | Страница |
 |-----------|-----|---------|--------|---------|
-| Гемоглобин | `hemoglobin` | g/L | Clinical | [[02 - Biomarkers/06 - Blood Count/Hemoglobin\|ссылка]] |
+| Гемоглобин | `hemoglobin` | g/L | Clinical | [ссылка](../02%20-%20Biomarkers/06%20-%20Blood%20Count/Hemoglobin.md) |
 
 ---
 
@@ -79,7 +79,7 @@ created: 2026-06-20
 
 | Биомаркер | Код | Единицы | Статус | Страница |
 |-----------|-----|---------|--------|---------|
-| Витамин D | `vitaminD25Oh` | ng/mL | Clinical | [[02 - Biomarkers/08 - Vitamins/25(OH)D\|ссылка]] |
+| Витамин D | `vitaminD25Oh` | ng/mL | Clinical | [ссылка](../02%20-%20Biomarkers/08%20-%20Vitamins/25(OH)D.md) |
 
 ---
 
@@ -87,9 +87,9 @@ created: 2026-06-20
 
 | Биомаркер | Код | Единицы | Статус | Страница |
 |-----------|-----|---------|--------|---------|
-| Артериальное давление | `systolicBloodPressure` | mmHg | Clinical | [[02 - Biomarkers/13 - Telemetry/Systolic Blood Pressure\|ссылка]] |
-| Пульс покоя | `restingHeartRate` | bpm | Clinical | [[02 - Biomarkers/13 - Telemetry/Resting Heart Rate\|ссылка]] |
-| HRV (RMSSD) | `hrvRmssd` | ms | Clinical | [[02 - Biomarkers/13 - Telemetry/HRV RMSSD\|ссылка]] |
+| Артериальное давление | `systolicBloodPressure` | mmHg | Clinical | [ссылка](../02%20-%20Biomarkers/13%20-%20Telemetry/Systolic%20Blood%20Pressure.md) |
+| Пульс покоя | `restingHeartRate` | bpm | Clinical | [ссылка](../02%20-%20Biomarkers/13%20-%20Telemetry/Resting%20Heart%20Rate.md) |
+| HRV (RMSSD) | `hrvRmssd` | ms | Clinical | [ссылка](../02%20-%20Biomarkers/13%20-%20Telemetry/HRV%20RMSSD.md) |
 
 ---
 

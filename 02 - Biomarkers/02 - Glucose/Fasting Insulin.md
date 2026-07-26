@@ -15,7 +15,7 @@ tags: [biomarker, mvp, glucose]
 
 # Инсулин натощак (`fastingInsulin`)
 
-> **Единицы:** mcU/mL | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/02 - Glucose/\|Углеводный обмен]]
+> **Единицы:** mcU/mL | **Статус:** Clinical | **Категория:** [Углеводный обмен](./)
 
 ---
 
@@ -50,9 +50,9 @@ tags: [biomarker, mvp, glucose]
 
 *(Все биомаркеры категории «Углеводный обмен»)*
 
-- [[02 - Biomarkers/02 - Glucose/Fasting Glucose\|Глюкоза натощак]] (`fastingGlucose`)
-- [[02 - Biomarkers/02 - Glucose/HOMA-IR\|Индекс HOMA-IR]] (`homaIr`)
-- [[02 - Biomarkers/02 - Glucose/HbA1c\|HbA1c]] (`hba1c`)
+- [Глюкоза натощак](Fasting%20Glucose.md) (`fastingGlucose`)
+- [Индекс HOMA-IR](HOMA-IR.md) (`homaIr`)
+- [HbA1c](HbA1c.md) (`hba1c`)
 
 ---
 
@@ -60,8 +60,8 @@ tags: [biomarker, mvp, glucose]
 
 | Вещество | Эффект | Дельта/тик |
 |---------|--------|-----------|
-| [[03 - Substances/Berberine\|Берберин]] | ↓ | -0.05000 |
-| [[03 - Substances/Metformin\|Метформин]] | ↓ | -0.08000 |
+| [Берберин](../../03%20-%20Substances/Berberine.md) | ↓ | -0.05000 |
+| [Метформин](../../03%20-%20Substances/Metformin.md) | ↓ | -0.08000 |
 
 > *Дельты при 100% концентрации за 1 тик. Источник: substances.json (Phase 4)*
 

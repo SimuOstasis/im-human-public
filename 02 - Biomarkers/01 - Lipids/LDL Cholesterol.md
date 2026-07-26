@@ -15,7 +15,7 @@ tags: [biomarker, mvp, lipids]
 
 # Холестерин ЛПНП (`ldlC`)
 
-> **Единицы:** mmol/L | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/01 - Lipids/\|Липиды]]
+> **Единицы:** mmol/L | **Статус:** Clinical | **Категория:** [Липиды](./)
 
 ---
 
@@ -50,9 +50,9 @@ LDL-холестерин (липопротеины низкой плотност
 
 *(Все биомаркеры категории «Липиды»)*
 
-- [[02 - Biomarkers/01 - Lipids/HDL Cholesterol\|Холестерин ЛПВП]] (`hdlC`)
-- [[02 - Biomarkers/01 - Lipids/Triglycerides\|Триглицериды]] (`triglycerides`)
-- [[02 - Biomarkers/01 - Lipids/Apolipoprotein B\|Аполипопротеин B]] (`apoB`)
+- [Холестерин ЛПВП](HDL%20Cholesterol.md) (`hdlC`)
+- [Триглицериды](Triglycerides.md) (`triglycerides`)
+- [Аполипопротеин B](Apolipoprotein%20B.md) (`apoB`)
 
 ---
 
@@ -60,9 +60,9 @@ LDL-холестерин (липопротеины низкой плотност
 
 | Вещество | Эффект | Дельта/тик |
 |---------|--------|-----------|
-| [[03 - Substances/Omega-3\|Омега-3 жирные кислоты]] | ↓ | -0.00300 |
-| [[03 - Substances/Berberine\|Берберин]] | ↓ | -0.00200 |
-| [[03 - Substances/Metformin\|Метформин]] | ↓ | -0.00100 |
+| [Омега-3 жирные кислоты](../../03%20-%20Substances/Omega-3.md) | ↓ | -0.00300 |
+| [Берберин](../../03%20-%20Substances/Berberine.md) | ↓ | -0.00200 |
+| [Метформин](../../03%20-%20Substances/Metformin.md) | ↓ | -0.00100 |
 
 > *Дельты при 100% концентрации за 1 тик. Источник: substances.json (Phase 4)*
 

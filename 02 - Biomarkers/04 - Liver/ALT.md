@@ -15,7 +15,7 @@ tags: [biomarker, mvp, liver]
 
 # АЛТ (`alt`)
 
-> **Единицы:** U/L | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/04 - Liver/\|Функция печени]]
+> **Единицы:** U/L | **Статус:** Clinical | **Категория:** [Функция печени](./)
 
 ---
 
@@ -58,9 +58,9 @@ tags: [biomarker, mvp, liver]
 
 *(Все биомаркеры категории «Функция печени»)*
 
-- [[02 - Biomarkers/04 - Liver/AST\|АСТ]] (`ast`)
-- [[02 - Biomarkers/04 - Liver/GGT\|ГГТ]] (`ggt`)
-- [[02 - Biomarkers/04 - Liver/Albumin\|Альбумин]] (`albumin`)
+- [АСТ](AST.md) (`ast`)
+- [ГГТ](GGT.md) (`ggt`)
+- [Альбумин](Albumin.md) (`albumin`)
 
 ---
 
@@ -68,7 +68,7 @@ tags: [biomarker, mvp, liver]
 
 | Вещество | Эффект | Дельта/тик |
 |---------|--------|-----------|
-| [[03 - Substances/Metformin\|Метформин]] | ↑ | +0.01000 |
+| [Метформин](../../03%20-%20Substances/Metformin.md) | ↑ | +0.01000 |
 
 > *Дельты при 100% концентрации за 1 тик. Источник: substances.json (Phase 4)*
 

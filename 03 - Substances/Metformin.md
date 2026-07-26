@@ -44,11 +44,11 @@ tags: [substance, drug, metformin]
 
 | Биомаркер | Направление | Дельта/тик (100% конц.) | Ссылка |
 |-----------|------------|------------------------|--------|
-| [[02 - Biomarkers/02 - Glucose/Fasting Glucose\|Глюкоза натощак]] | ↓ | -0.01000 | — |
-| [[02 - Biomarkers/02 - Glucose/Fasting Insulin\|Инсулин натощак]] | ↓ | -0.08000 | — |
-| [[02 - Biomarkers/02 - Glucose/HOMA-IR\|Индекс HOMA-IR]] | ↓ | -0.00500 | — |
-| [[02 - Biomarkers/01 - Lipids/LDL Cholesterol\|Холестерин ЛПНП]] | ↓ | -0.00100 | — |
-| [[02 - Biomarkers/04 - Liver/ALT\|АЛТ]] | ↑ | +0.01000 | — |
+| [Глюкоза натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Glucose.md) | ↓ | -0.01000 | — |
+| [Инсулин натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Insulin.md) | ↓ | -0.08000 | — |
+| [Индекс HOMA-IR](../02%20-%20Biomarkers/02%20-%20Glucose/HOMA-IR.md) | ↓ | -0.00500 | — |
+| [Холестерин ЛПНП](../02%20-%20Biomarkers/01%20-%20Lipids/LDL%20Cholesterol.md) | ↓ | -0.00100 | — |
+| [АЛТ](../02%20-%20Biomarkers/04%20-%20Liver/ALT.md) | ↑ | +0.01000 | — |
 
 > *Дельты — абсолютные изменения на 1 тик при 100% терапевтической концентрации. Движок Phase 5 масштабирует: applied_delta = delta × C(t)/Tmax*
 
@@ -56,7 +56,7 @@ tags: [substance, drug, metformin]
 
 ## Взаимодействия
 
-Полная матрица: [[04 - Interactions/Interactions Index]]
+Полная матрица: [Interactions Index](../04%20-%20Interactions/Interactions%20Index.md)
 
 - **antagonism**: с `rapamycin` (коэффициент 0.7): Метформин и Рапамицин действуют через перекрывающиеся mTOR/AMPK пути. Совместный приём снижает эффективность обоих на 30%; риск нежелательных метаболических эффектов выше.
 - **antagonism**: с `berberine` (коэффициент 0.8): Берберин и Метформин используют схожие механизмы снижения глюкозы (AMPK). Совместный приём повышает риск лактатацидоза и не даёт аддитивного эффекта.
@@ -65,11 +65,11 @@ tags: [substance, drug, metformin]
 
 ## Связанные страницы
 
-- [[02 - Biomarkers/02 - Glucose/Fasting Glucose\|Глюкоза натощак]]
-- [[02 - Biomarkers/02 - Glucose/Fasting Insulin\|Инсулин натощак]]
-- [[02 - Biomarkers/02 - Glucose/HOMA-IR\|Индекс HOMA-IR]]
-- [[02 - Biomarkers/01 - Lipids/LDL Cholesterol\|Холестерин ЛПНП]]
-- [[02 - Biomarkers/04 - Liver/ALT\|АЛТ]]
+- [Глюкоза натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Glucose.md)
+- [Инсулин натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Insulin.md)
+- [Индекс HOMA-IR](../02%20-%20Biomarkers/02%20-%20Glucose/HOMA-IR.md)
+- [Холестерин ЛПНП](../02%20-%20Biomarkers/01%20-%20Lipids/LDL%20Cholesterol.md)
+- [АЛТ](../02%20-%20Biomarkers/04%20-%20Liver/ALT.md)
 
 ---
 

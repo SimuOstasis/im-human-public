@@ -42,9 +42,9 @@ tags: [substance, supplement, magnesium]
 
 | Биомаркер | Направление | Дельта/тик (100% конц.) | Ссылка |
 |-----------|------------|------------------------|--------|
-| [[02 - Biomarkers/13 - Telemetry/Systolic Blood Pressure\|Артериальное давление]] | ↓ | -0.02000 | — |
-| [[02 - Biomarkers/13 - Telemetry/HRV RMSSD\|HRV (RMSSD)]] | ↑ | +0.00030 | — |
-| [[02 - Biomarkers/02 - Glucose/Fasting Glucose\|Глюкоза натощак]] | ↓ | -0.00200 | — |
+| [Артериальное давление](../02%20-%20Biomarkers/13%20-%20Telemetry/Systolic%20Blood%20Pressure.md) | ↓ | -0.02000 | — |
+| [HRV (RMSSD)](../02%20-%20Biomarkers/13%20-%20Telemetry/HRV%20RMSSD.md) | ↑ | +0.00030 | — |
+| [Глюкоза натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Glucose.md) | ↓ | -0.00200 | — |
 
 > *Дельты — абсолютные изменения на 1 тик при 100% терапевтической концентрации. Движок Phase 5 масштабирует: applied_delta = delta × C(t)/Tmax*
 
@@ -52,7 +52,7 @@ tags: [substance, supplement, magnesium]
 
 ## Взаимодействия
 
-Полная матрица: [[04 - Interactions/Interactions Index]]
+Полная матрица: [Interactions Index](../04%20-%20Interactions/Interactions%20Index.md)
 
 - **synergy**: с `vitamin_d3` (коэффициент 1.2): Магний необходим для активации витамина D3 (25-OH → 1,25-OH). Дефицит магния снижает эффективность витамина D3 на 20-30%.
 
@@ -60,9 +60,9 @@ tags: [substance, supplement, magnesium]
 
 ## Связанные страницы
 
-- [[02 - Biomarkers/13 - Telemetry/Systolic Blood Pressure\|Артериальное давление]]
-- [[02 - Biomarkers/13 - Telemetry/HRV RMSSD\|HRV (RMSSD)]]
-- [[02 - Biomarkers/02 - Glucose/Fasting Glucose\|Глюкоза натощак]]
+- [Артериальное давление](../02%20-%20Biomarkers/13%20-%20Telemetry/Systolic%20Blood%20Pressure.md)
+- [HRV (RMSSD)](../02%20-%20Biomarkers/13%20-%20Telemetry/HRV%20RMSSD.md)
+- [Глюкоза натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Glucose.md)
 
 ---
 

@@ -97,7 +97,7 @@ Rapamycin дозируется 1 раз в неделю (каждые 168 тик
 
 ## Ссылки
 
-- [[06 - Engine/Pharmacokinetics Model]] — engine.tick() вызывает PK-модель для обновления концентраций
-- [[06 - Engine/RNG Seeding]] — rng передаётся в engine.tick() для PROBABILISTIC событий
-- [[06 - Engine/Event Detector]] — CRITICAL событие → state.status = PAUSED → run_batch прерывается
-- [[03 - Substances/Rapamycin]] — пример CycleConfig on_days=1 off_days=6 для should_dose()
+- [Pharmacokinetics Model](Pharmacokinetics%20Model.md) — engine.tick() вызывает PK-модель для обновления концентраций
+- [RNG Seeding](RNG%20Seeding.md) — rng передаётся в engine.tick() для PROBABILISTIC событий
+- [Event Detector](Event%20Detector.md) — CRITICAL событие → state.status = PAUSED → run_batch прерывается
+- [Rapamycin](../03%20-%20Substances/Rapamycin.md) — пример CycleConfig on_days=1 off_days=6 для should_dose()

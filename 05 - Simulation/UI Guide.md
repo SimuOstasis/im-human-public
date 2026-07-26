@@ -115,7 +115,7 @@ python src/main.py
 тысячи тиков в секунду, а UI перерисовывает 24 графика примерно 5 раз в секунду — поэтому интерфейс
 не зависает даже при x10000. Опорный факт: бенчмарк рассчитывает 1 симулированный год
 (8760 тиков) менее чем за 5 секунд в оптимизированном режиме. Подробнее о батчах —
-[[06 - Engine/Adaptive Stepper]] и [[06 - Engine/Simulation Engine]].
+[Adaptive Stepper](../06%20-%20Engine/Adaptive%20Stepper.md) и [Simulation Engine](../06%20-%20Engine/Simulation%20Engine.md).
 
 ---
 

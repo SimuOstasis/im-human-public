@@ -68,6 +68,6 @@ AdaptiveStepper.should_dose() проверяет цикл на каждом ти
 
 ## Ссылки
 
-- [[LDL Cholesterol]] — пример биомаркера с LDL effectProfile
-- [[Omega-3]] — omega3 страница с полными PK-параметрами
-- [[Biological Age Formula]] — формула биологического возраста
+- [LDL Cholesterol](../02%20-%20Biomarkers/01%20-%20Lipids/LDL%20Cholesterol.md) — пример биомаркера с LDL effectProfile
+- [Omega-3](../03%20-%20Substances/Omega-3.md) — omega3 страница с полными PK-параметрами
+- [Biological Age Formula](Biological%20Age%20Formula.md) — формула биологического возраста

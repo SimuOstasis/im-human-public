@@ -13,10 +13,10 @@ phase: v2.0 / M10
 времени) проходит через все субмодули и как из этого складывается многолетняя траектория
 биомаркеров. Реализован в `src/engine/simulation_engine.py` (класс `SimulationEngine`).
 
-> Это страница-«карта»: она связывает воедино [[Pharmacokinetics Model]],
-> [[Homeostasis Model]], [[Interaction Resolver]],
-> [[Event Detector]], [[Biological Age Formula]],
-> [[Adaptive Stepper]] и [[RNG Seeding]].
+> Это страница-«карта»: она связывает воедино [Pharmacokinetics Model](Pharmacokinetics%20Model.md),
+> [Homeostasis Model](Homeostasis%20Model.md), [Interaction Resolver](Interaction%20Resolver.md),
+> [Event Detector](Event%20Detector.md), [Biological Age Formula](Biological%20Age%20Formula.md),
+> [Adaptive Stepper](Adaptive%20Stepper.md) и [RNG Seeding](RNG%20Seeding.md).
 
 ---
 
@@ -25,7 +25,7 @@ phase: v2.0 / M10
 | Понятие | Значение |
 |---------|---------|
 | **Тик** | Минимальный шаг времени. **1 тик = 1 астрономический час.** |
-| **Batch (батч)** | Пачка тиков, выполняемая за одну итерацию UI-цикла. Размер = множитель скорости (×1..×10000). См. [[Adaptive Stepper]]. |
+| **Batch (батч)** | Пачка тиков, выполняемая за одну итерацию UI-цикла. Размер = множитель скорости (×1..×10000). См. [Adaptive Stepper](Adaptive%20Stepper.md). |
 | **SimulationState** | Изменяемое состояние: значения биомаркеров, концентрации веществ, Cmax, счётчик тиков, состояние RNG, события. |
 | **Baseline** | Базовые значения биомаркеров, вычисленные один раз при инициализации по полу/возрасту профиля. |
 | **Детерминизм** | При одинаковом `seed` и профиле результат **побитово идентичен** на любой машине. |
@@ -79,20 +79,20 @@ flowchart TD
 
 | Шаг | Что делает | Модуль |
 |-----|-----------|--------|
-| **0** | Проверяет `status == RUNNING` (иначе `ValueError`), восстанавливает `rng_state` для детерминизма при pause/resume | `simulation_engine` / [[RNG Seeding\|RNG]] |
+| **0** | Проверяет `status == RUNNING` (иначе `ValueError`), восстанавливает `rng_state` для детерминизма при pause/resume | `simulation_engine` / [RNG](RNG%20Seeding.md) |
 | **1** | Увеличивает `tick_count` и модельное время на 1 час; очищает список событий тика | — |
-| **2** | Для каждого расписания проверяет `should_dose()`; при выдаче дозы конвертирует единицы (IU→мг), считает прирост концентрации `ΔC = D·F/(Vd·W)`, обновляет `Cmax` | [[Adaptive Stepper\|Stepper]] + [[Pharmacokinetics Model\|PK]] |
-| **3** | Экспоненциально уменьшает концентрацию каждого вещества: `C·e^(−ke)`; удаляет концентрации неизвестных веществ | [[Pharmacokinetics Model\|PK]] |
-| **4** | Применяет эффекты веществ на биомаркеры пропорционально `C/Cmax` | [[Pharmacokinetics Model\|PK]] |
-| **5** | Усиливает (синергия) или ослабляет (антагонизм) дельты у пересекающихся биомаркеров | [[Interaction Resolver\|Interactions]] |
-| **6** | Возрастной дрейф к «деградированным» значениям + восстановление к baseline с учётом resilience и образа жизни | [[Homeostasis Model\|Homeostasis]] |
+| **2** | Для каждого расписания проверяет `should_dose()`; при выдаче дозы конвертирует единицы (IU→мг), считает прирост концентрации `ΔC = D·F/(Vd·W)`, обновляет `Cmax` | [Stepper](Adaptive%20Stepper.md) + [PK](Pharmacokinetics%20Model.md) |
+| **3** | Экспоненциально уменьшает концентрацию каждого вещества: `C·e^(−ke)`; удаляет концентрации неизвестных веществ | [PK](Pharmacokinetics%20Model.md) |
+| **4** | Применяет эффекты веществ на биомаркеры пропорционально `C/Cmax` | [PK](Pharmacokinetics%20Model.md) |
+| **5** | Усиливает (синергия) или ослабляет (антагонизм) дельты у пересекающихся биомаркеров | [Interactions](Interaction%20Resolver.md) |
+| **6** | Возрастной дрейф к «деградированным» значениям + восстановление к baseline с учётом resilience и образа жизни | [Homeostasis](Homeostasis%20Model.md) |
 | **7** | Зажимает все биомаркеры в безопасные границы `[0, max_safe]` | `simulation_engine` (D-08) |
-| **8** | Сравнивает значения с зоной `high_risk` → `WARNING`/`CRITICAL` | [[Event Detector\|Events]] |
-| **9** | Проверяет вероятностные риски через `rng.random()` | [[Event Detector\|Events]] |
-| **10** | Обновляет `biological_age` (частичная PhenoAge) | [[Biological Age Formula\|Bio-Age]] |
-| **11** | Обновляет `resilience_index` (albumin, eGFR, HRV) | [[Biological Age Formula\|Bio-Age]] |
+| **8** | Сравнивает значения с зоной `high_risk` → `WARNING`/`CRITICAL` | [Events](Event%20Detector.md) |
+| **9** | Проверяет вероятностные риски через `rng.random()` | [Events](Event%20Detector.md) |
+| **10** | Обновляет `biological_age` (частичная PhenoAge) | [Bio-Age](Biological%20Age%20Formula.md) |
+| **11** | Обновляет `resilience_index` (albumin, eGFR, HRV) | [Bio-Age](Biological%20Age%20Formula.md) |
 | **12** | Если появилось `CRITICAL`-событие — переводит FSM `RUNNING → PAUSED` | `simulation_engine` (D-15) |
-| **13** | Сохраняет состояние RNG в `state.rng_state` | [[RNG Seeding\|RNG]] |
+| **13** | Сохраняет состояние RNG в `state.rng_state` | [RNG](RNG%20Seeding.md) |
 
 > **Порядок важен.** Сначала «внешние» силы (дозы → распад → эффекты → взаимодействия), затем
 > «внутренние» (гомеостаз), затем зажим, и только потом — детектирование событий по уже
@@ -102,7 +102,7 @@ flowchart TD
 
 ## Как тики складываются в батчи
 
-UI не вызывает `tick()` напрямую. Между UI и движком стоит [[Adaptive Stepper]]:
+UI не вызывает `tick()` напрямую. Между UI и движком стоит [Adaptive Stepper](Adaptive%20Stepper.md):
 
 ```mermaid
 flowchart LR
@@ -142,17 +142,17 @@ stateDiagram-v2
 - `SimulationEngine` **только оркестрирует** — вся предметная логика в субмодулях.
 - Внутри `tick()` нет файлового I/O и сети (`biological_age` считается локально, T-05-14).
 - Экспорт/восстановление состояния (включая `rng_state`) — отдельный модуль
-  `src/engine/exporter.py`, см. [[User Guide]].
+  `src/engine/exporter.py`, см. [User Guide](User%20Guide.md).
 
 ---
 
 ## Ссылки
 
-- [[Pharmacokinetics Model]] — шаги 2–4 (дозы, распад, эффекты)
-- [[Interaction Resolver]] — шаг 5 (синергии/антагонизмы)
-- [[Homeostasis Model]] — шаг 6 (дрейф/восстановление)
-- [[Event Detector]] — шаги 8–9 (события)
-- [[Biological Age Formula]] — шаги 10–11 (возраст/устойчивость)
-- [[Adaptive Stepper]] — батчи и скорости
-- [[RNG Seeding]] — детерминизм (шаги 0 и 13)
-- [[Simulation Assumptions]] — почему модель устроена именно так
+- [Pharmacokinetics Model](Pharmacokinetics%20Model.md) — шаги 2–4 (дозы, распад, эффекты)
+- [Interaction Resolver](Interaction%20Resolver.md) — шаг 5 (синергии/антагонизмы)
+- [Homeostasis Model](Homeostasis%20Model.md) — шаг 6 (дрейф/восстановление)
+- [Event Detector](Event%20Detector.md) — шаги 8–9 (события)
+- [Biological Age Formula](Biological%20Age%20Formula.md) — шаги 10–11 (возраст/устойчивость)
+- [Adaptive Stepper](Adaptive%20Stepper.md) — батчи и скорости
+- [RNG Seeding](RNG%20Seeding.md) — детерминизм (шаги 0 и 13)
+- [Simulation Assumptions](../07%20-%20Analysis/Simulation%20Assumptions.md) — почему модель устроена именно так

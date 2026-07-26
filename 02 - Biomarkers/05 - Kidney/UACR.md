@@ -15,7 +15,7 @@ tags: [biomarker, mvp, kidney]
 
 # UACR (`urineAlbuminCreatinineRatio`)
 
-> **Единицы:** mg/g | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/05 - Kidney/\|Функция почек]]
+> **Единицы:** mg/g | **Статус:** Clinical | **Категория:** [Функция почек](./)
 
 ---
 
@@ -54,10 +54,10 @@ Albumin (mg/dL) / Creatinine (mg/dL) × 1000
 
 *(Все биомаркеры категории «Функция почек»)*
 
-- [[02 - Biomarkers/05 - Kidney/Serum Creatinine\|Креатинин]] (`creatinine`)
-- [[02 - Biomarkers/05 - Kidney/eGFR\|Расчётная СКФ]] (`egfr`)
-- [[02 - Biomarkers/05 - Kidney/Sodium\|Натрий]] (`sodium`)
-- [[02 - Biomarkers/05 - Kidney/Potassium\|Калий]] (`potassium`)
+- [Креатинин](Serum%20Creatinine.md) (`creatinine`)
+- [Расчётная СКФ](eGFR.md) (`egfr`)
+- [Натрий](Sodium.md) (`sodium`)
+- [Калий](Potassium.md) (`potassium`)
 
 ---
 

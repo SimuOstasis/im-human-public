@@ -15,7 +15,7 @@ tags: [biomarker, mvp, kidney]
 
 # Калий (`potassium`)
 
-> **Единицы:** mmol/L | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/05 - Kidney/\|Функция почек]]
+> **Единицы:** mmol/L | **Статус:** Clinical | **Категория:** [Функция почек](./)
 
 ---
 
@@ -51,10 +51,10 @@ tags: [biomarker, mvp, kidney]
 
 *(Все биомаркеры категории «Функция почек»)*
 
-- [[02 - Biomarkers/05 - Kidney/Serum Creatinine\|Креатинин]] (`creatinine`)
-- [[02 - Biomarkers/05 - Kidney/eGFR\|Расчётная СКФ]] (`egfr`)
-- [[02 - Biomarkers/05 - Kidney/UACR\|UACR]] (`urineAlbuminCreatinineRatio`)
-- [[02 - Biomarkers/05 - Kidney/Sodium\|Натрий]] (`sodium`)
+- [Креатинин](Serum%20Creatinine.md) (`creatinine`)
+- [Расчётная СКФ](eGFR.md) (`egfr`)
+- [UACR](UACR.md) (`urineAlbuminCreatinineRatio`)
+- [Натрий](Sodium.md) (`sodium`)
 
 ---
 

@@ -42,11 +42,11 @@ tags: [substance, supplement, berberine]
 
 | Биомаркер | Направление | Дельта/тик (100% конц.) | Ссылка |
 |-----------|------------|------------------------|--------|
-| [[Fasting Glucose\|Глюкоза натощак]] | ↓ | -0.00800 | — |
-| [[Fasting Insulin\|Инсулин натощак]] | ↓ | -0.05000 | — |
-| [[HOMA-IR\|Индекс HOMA-IR]] | ↓ | -0.00300 | — |
-| [[LDL Cholesterol\|Холестерин ЛПНП]] | ↓ | -0.00200 | — |
-| [[Triglycerides\|Триглицериды]] | ↓ | -0.00400 | — |
+| [Глюкоза натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Glucose.md) | ↓ | -0.00800 | — |
+| [Инсулин натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Insulin.md) | ↓ | -0.05000 | — |
+| [Индекс HOMA-IR](../02%20-%20Biomarkers/02%20-%20Glucose/HOMA-IR.md) | ↓ | -0.00300 | — |
+| [Холестерин ЛПНП](../02%20-%20Biomarkers/01%20-%20Lipids/LDL%20Cholesterol.md) | ↓ | -0.00200 | — |
+| [Триглицериды](../02%20-%20Biomarkers/01%20-%20Lipids/Triglycerides.md) | ↓ | -0.00400 | — |
 
 > *Дельты — абсолютные изменения на 1 тик при 100% терапевтической концентрации. Движок Phase 5 масштабирует: applied_delta = delta × C(t)/Tmax*
 
@@ -54,7 +54,7 @@ tags: [substance, supplement, berberine]
 
 ## Взаимодействия
 
-Полная матрица: [[Interactions Index]]
+Полная матрица: [Interactions Index](../04%20-%20Interactions/Interactions%20Index.md)
 
 - **antagonism**: с `metformin` (коэффициент 0.8): Берберин и Метформин используют схожие механизмы снижения глюкозы (AMPK). Совместный приём повышает риск лактатацидоза и не даёт аддитивного эффекта.
 
@@ -62,11 +62,11 @@ tags: [substance, supplement, berberine]
 
 ## Связанные страницы
 
-- [[Fasting Glucose|Глюкоза натощак]]
-- [[Fasting Insulin|Инсулин натощак]]
-- [[HOMA-IR|Индекс HOMA-IR]]
-- [[LDL Cholesterol|Холестерин ЛПНП]]
-- [[Triglycerides|Триглицериды]]
+- [Глюкоза натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Glucose.md)
+- [Инсулин натощак](../02%20-%20Biomarkers/02%20-%20Glucose/Fasting%20Insulin.md)
+- [Индекс HOMA-IR](../02%20-%20Biomarkers/02%20-%20Glucose/HOMA-IR.md)
+- [Холестерин ЛПНП](../02%20-%20Biomarkers/01%20-%20Lipids/LDL%20Cholesterol.md)
+- [Триглицериды](../02%20-%20Biomarkers/01%20-%20Lipids/Triglycerides.md)
 
 ---
 

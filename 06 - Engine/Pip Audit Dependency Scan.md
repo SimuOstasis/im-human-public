@@ -109,7 +109,7 @@ venv\Scripts\python.exe -m pip_audit
 
 ## Ссылки
 
-- [[06 - Engine/Neo4j Backup Restore]] — аналогичная структура операционного отчёта в `06 - Engine/`
+- [Neo4j Backup Restore](Neo4j%20Backup%20Restore.md) — аналогичная структура операционного отчёта в `06 - Engine/`
 - `requirements.txt` (корень репозитория) — объект аудита; верхние границы версий зафиксированы в
   Phase 09 (LINE-03) и не меняются этой проверкой
 - `.github/workflows/ci.yml` — непрерывный CI-шаг `pip-audit` (D-09/D-18), не заменяет эту разовую

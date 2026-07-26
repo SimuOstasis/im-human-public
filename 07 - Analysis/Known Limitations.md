@@ -115,7 +115,7 @@ IL-6 → CRP → усиление IL-6. В модели — линейные н�
 
 Формулировка усилена в Phase 11 (FND-04) на основе исследования типичных практик — подробное
 исследование (международные практики + контекст РФ по обороту рецептурных препаратов, явно НЕ
-юридическое заключение) см. [[Legal Disclaimer Review]]. В `src/ui/disclaimer.py` (статус-бар
+юридическое заключение) см. [Legal Disclaimer Review](Legal%20Disclaimer%20Review.md). В `src/ui/disclaimer.py` (статус-бар
 приложения) и `README.md` намеренно сохранена короткая форма текста — ограниченное пространство UI
 (решение D-21, `.planning/phases/11-foundation/11-CONTEXT.md`).
 
@@ -154,8 +154,8 @@ IL-6 → CRP → усиление IL-6. В модели — линейные н�
 
 ## Ссылки
 
-- [[Simulation Assumptions]] — философия и архитектурные принципы модели
-- [[Simulation Engine]] — полный цикл тика (13 шагов)
-- [[Pharmacokinetics Model]] — текущая PK-модель (линейные дельты, 1-compartment)
-- [[Homeostasis Model]] — механизм восстановления (упрощённый гомеостаз)
-- [[User Guide]] — руководство пользователя
+- [Simulation Assumptions](Simulation%20Assumptions.md) — философия и архитектурные принципы модели
+- [Simulation Engine](../06%20-%20Engine/Simulation%20Engine.md) — полный цикл тика (13 шагов)
+- [Pharmacokinetics Model](../06%20-%20Engine/Pharmacokinetics%20Model.md) — текущая PK-модель (линейные дельты, 1-compartment)
+- [Homeostasis Model](../06%20-%20Engine/Homeostasis%20Model.md) — механизм восстановления (упрощённый гомеостаз)
+- [User Guide](../06%20-%20Engine/User%20Guide.md) — руководство пользователя

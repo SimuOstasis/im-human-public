@@ -15,7 +15,7 @@ tags: [biomarker, mvp, glucose]
 
 # HbA1c (`hba1c`)
 
-> **Единицы:** % | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/02 - Glucose/\|Углеводный обмен]]
+> **Единицы:** % | **Статус:** Clinical | **Категория:** [Углеводный обмен](./)
 
 ---
 
@@ -50,9 +50,9 @@ HbA1c (гликированный гемоглобин) — доля гемог�
 
 *(Все биомаркеры категории «Углеводный обмен»)*
 
-- [[02 - Biomarkers/02 - Glucose/Fasting Glucose\|Глюкоза натощак]] (`fastingGlucose`)
-- [[02 - Biomarkers/02 - Glucose/Fasting Insulin\|Инсулин натощак]] (`fastingInsulin`)
-- [[02 - Biomarkers/02 - Glucose/HOMA-IR\|Индекс HOMA-IR]] (`homaIr`)
+- [Глюкоза натощак](Fasting%20Glucose.md) (`fastingGlucose`)
+- [Инсулин натощак](Fasting%20Insulin.md) (`fastingInsulin`)
+- [Индекс HOMA-IR](HOMA-IR.md) (`homaIr`)
 
 ---
 

@@ -99,7 +99,7 @@ im-human использует детерминированный генерат�
 - **Threshold effects.** Некоторые вещества работают только выше определённой концентрации.
   В MVP — всегда пропорциональный эффект.
 
-Эти ограничения задокументированы в [[07 - Analysis/Known Limitations]].
+Эти ограничения задокументированы в [Known Limitations](Known%20Limitations.md).
 
 ---
 
@@ -155,10 +155,10 @@ im-human **не является** клиническим инструменто
 
 ## Ссылки
 
-- [[06 - Engine/Simulation Engine]] — полный 13-шаговый цикл тика (как всё соединяется)
-- [[06 - Engine/Pharmacokinetics Model]] — формулы PK-модели (ke, Cmax, экспоненциальный распад)
-- [[06 - Engine/Homeostasis Model]] — детальное описание гомеостаза
-- [[06 - Engine/Adaptive Stepper]] — механизм ускорения (×1..×10000)
-- [[06 - Engine/RNG Seeding]] — детерминированный генератор псевдослучайных чисел
-- [[07 - Analysis/Known Limitations]] — полный список ограничений модели
-- [[06 - Engine/User Guide]] — руководство пользователя
+- [Simulation Engine](../06%20-%20Engine/Simulation%20Engine.md) — полный 13-шаговый цикл тика (как всё соединяется)
+- [Pharmacokinetics Model](../06%20-%20Engine/Pharmacokinetics%20Model.md) — формулы PK-модели (ke, Cmax, экспоненциальный распад)
+- [Homeostasis Model](../06%20-%20Engine/Homeostasis%20Model.md) — детальное описание гомеостаза
+- [Adaptive Stepper](../06%20-%20Engine/Adaptive%20Stepper.md) — механизм ускорения (×1..×10000)
+- [RNG Seeding](../06%20-%20Engine/RNG%20Seeding.md) — детерминированный генератор псевдослучайных чисел
+- [Known Limitations](Known%20Limitations.md) — полный список ограничений модели
+- [User Guide](../06%20-%20Engine/User%20Guide.md) — руководство пользователя

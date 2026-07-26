@@ -15,7 +15,7 @@ tags: [biomarker, mvp, kidney]
 
 # Креатинин (`creatinine`)
 
-> **Единицы:** umol/L | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/05 - Kidney/\|Функция почек]]
+> **Единицы:** umol/L | **Статус:** Clinical | **Категория:** [Функция почек](./)
 
 ---
 
@@ -58,10 +58,10 @@ tags: [biomarker, mvp, kidney]
 
 *(Все биомаркеры категории «Функция почек»)*
 
-- [[02 - Biomarkers/05 - Kidney/eGFR\|Расчётная СКФ]] (`egfr`)
-- [[02 - Biomarkers/05 - Kidney/UACR\|UACR]] (`urineAlbuminCreatinineRatio`)
-- [[02 - Biomarkers/05 - Kidney/Sodium\|Натрий]] (`sodium`)
-- [[02 - Biomarkers/05 - Kidney/Potassium\|Калий]] (`potassium`)
+- [Расчётная СКФ](eGFR.md) (`egfr`)
+- [UACR](UACR.md) (`urineAlbuminCreatinineRatio`)
+- [Натрий](Sodium.md) (`sodium`)
+- [Калий](Potassium.md) (`potassium`)
 
 ---
 
@@ -69,7 +69,7 @@ tags: [biomarker, mvp, kidney]
 
 | Вещество | Эффект | Дельта/тик |
 |---------|--------|-----------|
-| [[03 - Substances/Vitamin D3\|Витамин D3]] | ↓ | -0.00050 |
+| [Витамин D3](../../03%20-%20Substances/Vitamin%20D3.md) | ↓ | -0.00050 |
 
 > *Дельты при 100% концентрации за 1 тик. Источник: substances.json (Phase 4)*
 

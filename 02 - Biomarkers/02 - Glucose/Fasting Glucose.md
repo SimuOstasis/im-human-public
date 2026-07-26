@@ -15,7 +15,7 @@ tags: [biomarker, mvp, glucose]
 
 # Глюкоза натощак (`fastingGlucose`)
 
-> **Единицы:** mmol/L | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/02 - Glucose/\|Углеводный обмен]]
+> **Единицы:** mmol/L | **Статус:** Clinical | **Категория:** [Углеводный обмен](./)
 
 ---
 
@@ -50,9 +50,9 @@ tags: [biomarker, mvp, glucose]
 
 *(Все биомаркеры категории «Углеводный обмен»)*
 
-- [[02 - Biomarkers/02 - Glucose/Fasting Insulin\|Инсулин натощак]] (`fastingInsulin`)
-- [[02 - Biomarkers/02 - Glucose/HOMA-IR\|Индекс HOMA-IR]] (`homaIr`)
-- [[02 - Biomarkers/02 - Glucose/HbA1c\|HbA1c]] (`hba1c`)
+- [Инсулин натощак](Fasting%20Insulin.md) (`fastingInsulin`)
+- [Индекс HOMA-IR](HOMA-IR.md) (`homaIr`)
+- [HbA1c](HbA1c.md) (`hba1c`)
 
 ---
 
@@ -60,11 +60,11 @@ tags: [biomarker, mvp, glucose]
 
 | Вещество | Эффект | Дельта/тик |
 |---------|--------|-----------|
-| [[03 - Substances/Magnesium\|Магний]] | ↓ | -0.00200 |
-| [[03 - Substances/Berberine\|Берберин]] | ↓ | -0.00800 |
-| [[03 - Substances/Metformin\|Метформин]] | ↓ | -0.01000 |
-| [[03 - Substances/Rapamycin\|Рапамицин]] | ↑ | +0.00300 |
-| [[03 - Substances/NMN\|НМН (никотинамид мононуклеотид)]] | ↓ | -0.00100 |
+| [Магний](../../03%20-%20Substances/Magnesium.md) | ↓ | -0.00200 |
+| [Берберин](../../03%20-%20Substances/Berberine.md) | ↓ | -0.00800 |
+| [Метформин](../../03%20-%20Substances/Metformin.md) | ↓ | -0.01000 |
+| [Рапамицин](../../03%20-%20Substances/Rapamycin.md) | ↑ | +0.00300 |
+| [НМН (никотинамид мононуклеотид)](../../03%20-%20Substances/NMN.md) | ↓ | -0.00100 |
 
 > *Дельты при 100% концентрации за 1 тик. Источник: substances.json (Phase 4)*
 

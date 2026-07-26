@@ -15,7 +15,7 @@ tags: [biomarker, mvp, lipids]
 
 # Холестерин ЛПВП (`hdlC`)
 
-> **Единицы:** mmol/L | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/01 - Lipids/\|Липиды]]
+> **Единицы:** mmol/L | **Статус:** Clinical | **Категория:** [Липиды](./)
 
 ---
 
@@ -58,9 +58,9 @@ HDL-холестерин (липопротеины высокой плотнос
 
 *(Все биомаркеры категории «Липиды»)*
 
-- [[02 - Biomarkers/01 - Lipids/LDL Cholesterol\|Холестерин ЛПНП]] (`ldlC`)
-- [[02 - Biomarkers/01 - Lipids/Triglycerides\|Триглицериды]] (`triglycerides`)
-- [[02 - Biomarkers/01 - Lipids/Apolipoprotein B\|Аполипопротеин B]] (`apoB`)
+- [Холестерин ЛПНП](LDL%20Cholesterol.md) (`ldlC`)
+- [Триглицериды](Triglycerides.md) (`triglycerides`)
+- [Аполипопротеин B](Apolipoprotein%20B.md) (`apoB`)
 
 ---
 
@@ -68,7 +68,7 @@ HDL-холестерин (липопротеины высокой плотнос
 
 | Вещество | Эффект | Дельта/тик |
 |---------|--------|-----------|
-| [[03 - Substances/Omega-3\|Омега-3 жирные кислоты]] | ↑ | +0.00100 |
+| [Омега-3 жирные кислоты](../../03%20-%20Substances/Omega-3.md) | ↑ | +0.00100 |
 
 > *Дельты при 100% концентрации за 1 тик. Источник: substances.json (Phase 4)*
 

@@ -135,7 +135,7 @@ p_tick  = 1 - (1 - 0.222)^(1/87600) ≈ 2.84 × 10⁻⁶ за тик
 
 ## Ссылки
 
-- [[06 - Engine/Homeostasis Model]] — значения биомаркеров, которые детектор проверяет на каждом тике
-- [[06 - Engine/Interaction Resolver]] — CRITICAL событие при токсическом превышении концентрации
-- [[02 - Biomarkers/01 - Lipids/LDL Cholesterol]] — пример биомаркера с high_risk порогом 3.4 ммоль/л
-- [[06 - Engine/Adaptive Stepper]] — run_batch реагирует на CRITICAL → PAUSED при проверке статуса
+- [Homeostasis Model](Homeostasis%20Model.md) — значения биомаркеров, которые детектор проверяет на каждом тике
+- [Interaction Resolver](Interaction%20Resolver.md) — CRITICAL событие при токсическом превышении концентрации
+- [LDL Cholesterol](../02%20-%20Biomarkers/01%20-%20Lipids/LDL%20Cholesterol.md) — пример биомаркера с high_risk порогом 3.4 ммоль/л
+- [Adaptive Stepper](Adaptive%20Stepper.md) — run_batch реагирует на CRITICAL → PAUSED при проверке статуса

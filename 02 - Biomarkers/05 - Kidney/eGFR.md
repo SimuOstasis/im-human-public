@@ -15,7 +15,7 @@ tags: [biomarker, mvp, kidney]
 
 # Расчётная СКФ (`egfr`)
 
-> **Единицы:** mL/min/1.73m2 | **Статус:** Calculated | **Категория:** [[02 - Biomarkers/05 - Kidney/\|Функция почек]]
+> **Единицы:** mL/min/1.73m2 | **Статус:** Calculated | **Категория:** [Функция почек](./)
 
 ---
 
@@ -54,10 +54,10 @@ CKD-EPI 2021: варьируется по полу и SCr/κ. Источник: 
 
 *(Все биомаркеры категории «Функция почек»)*
 
-- [[02 - Biomarkers/05 - Kidney/Serum Creatinine\|Креатинин]] (`creatinine`)
-- [[02 - Biomarkers/05 - Kidney/UACR\|UACR]] (`urineAlbuminCreatinineRatio`)
-- [[02 - Biomarkers/05 - Kidney/Sodium\|Натрий]] (`sodium`)
-- [[02 - Biomarkers/05 - Kidney/Potassium\|Калий]] (`potassium`)
+- [Креатинин](Serum%20Creatinine.md) (`creatinine`)
+- [UACR](UACR.md) (`urineAlbuminCreatinineRatio`)
+- [Натрий](Sodium.md) (`sodium`)
+- [Калий](Potassium.md) (`potassium`)
 
 ---
 

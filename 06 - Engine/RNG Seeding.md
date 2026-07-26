@@ -104,6 +104,6 @@ assert val_before == val_after  # True
 
 ## Ссылки
 
-- [[06 - Engine/Adaptive Stepper]] — run_batch передаёт rng в engine.tick()
-- [[06 - Engine/Event Detector]] — PROBABILISTIC события используют `rng.random()` для детерминированных проверок
-- [[06 - Engine/Pharmacokinetics Model]] — экспорт SimulationState включает rng_state (связь с exporter.py)
+- [Adaptive Stepper](Adaptive%20Stepper.md) — run_batch передаёт rng в engine.tick()
+- [Event Detector](Event%20Detector.md) — PROBABILISTIC события используют `rng.random()` для детерминированных проверок
+- [Pharmacokinetics Model](Pharmacokinetics%20Model.md) — экспорт SimulationState включает rng_state (связь с exporter.py)

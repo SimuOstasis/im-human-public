@@ -42,11 +42,11 @@ tags: [substance, supplement, omega3]
 
 | Биомаркер | Направление | Дельта/тик (100% конц.) | Ссылка |
 |-----------|------------|------------------------|--------|
-| [[02 - Biomarkers/01 - Lipids/LDL Cholesterol\|Холестерин ЛПНП]] | ↓ | -0.00300 | — |
-| [[02 - Biomarkers/01 - Lipids/Triglycerides\|Триглицериды]] | ↓ | -0.00500 | — |
-| [[02 - Biomarkers/01 - Lipids/HDL Cholesterol\|Холестерин ЛПВП]] | ↑ | +0.00100 | — |
-| [[02 - Biomarkers/03 - Inflammation/hs-CRP\|Высокочувствительный СРБ]] | ↓ | -0.00100 | — |
-| [[02 - Biomarkers/13 - Telemetry/HRV RMSSD\|HRV (RMSSD)]] | ↑ | +0.00020 | — |
+| [Холестерин ЛПНП](../02%20-%20Biomarkers/01%20-%20Lipids/LDL%20Cholesterol.md) | ↓ | -0.00300 | — |
+| [Триглицериды](../02%20-%20Biomarkers/01%20-%20Lipids/Triglycerides.md) | ↓ | -0.00500 | — |
+| [Холестерин ЛПВП](../02%20-%20Biomarkers/01%20-%20Lipids/HDL%20Cholesterol.md) | ↑ | +0.00100 | — |
+| [Высокочувствительный СРБ](../02%20-%20Biomarkers/03%20-%20Inflammation/hs-CRP.md) | ↓ | -0.00100 | — |
+| [HRV (RMSSD)](../02%20-%20Biomarkers/13%20-%20Telemetry/HRV%20RMSSD.md) | ↑ | +0.00020 | — |
 
 > *Дельты — абсолютные изменения на 1 тик при 100% терапевтической концентрации. Движок Phase 5 масштабирует: applied_delta = delta × C(t)/Tmax*
 
@@ -54,7 +54,7 @@ tags: [substance, supplement, omega3]
 
 ## Взаимодействия
 
-Полная матрица: [[04 - Interactions/Interactions Index]]
+Полная матрица: [Interactions Index](../04%20-%20Interactions/Interactions%20Index.md)
 
 - **synergy**: с `vitamin_d3` (коэффициент 1.3): Омега-3 и Витамин D3 совместно усиливают противовоспалительный эффект через разные механизмы (EPA/DHA и VDR-путь). hs-CRP снижается сильнее при совместном приёме.
 
@@ -62,11 +62,11 @@ tags: [substance, supplement, omega3]
 
 ## Связанные страницы
 
-- [[02 - Biomarkers/01 - Lipids/LDL Cholesterol\|Холестерин ЛПНП]]
-- [[02 - Biomarkers/01 - Lipids/Triglycerides\|Триглицериды]]
-- [[02 - Biomarkers/01 - Lipids/HDL Cholesterol\|Холестерин ЛПВП]]
-- [[02 - Biomarkers/03 - Inflammation/hs-CRP\|Высокочувствительный СРБ]]
-- [[02 - Biomarkers/13 - Telemetry/HRV RMSSD\|HRV (RMSSD)]]
+- [Холестерин ЛПНП](../02%20-%20Biomarkers/01%20-%20Lipids/LDL%20Cholesterol.md)
+- [Триглицериды](../02%20-%20Biomarkers/01%20-%20Lipids/Triglycerides.md)
+- [Холестерин ЛПВП](../02%20-%20Biomarkers/01%20-%20Lipids/HDL%20Cholesterol.md)
+- [Высокочувствительный СРБ](../02%20-%20Biomarkers/03%20-%20Inflammation/hs-CRP.md)
+- [HRV (RMSSD)](../02%20-%20Biomarkers/13%20-%20Telemetry/HRV%20RMSSD.md)
 
 ---
 

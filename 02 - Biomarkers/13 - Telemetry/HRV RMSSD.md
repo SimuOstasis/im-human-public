@@ -15,7 +15,7 @@ tags: [biomarker, mvp, telemetry]
 
 # HRV (RMSSD) (`hrvRmssd`)
 
-> **Единицы:** ms | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/13 - Telemetry/\|Физиологическая телеметрия]]
+> **Единицы:** ms | **Статус:** Clinical | **Категория:** [Физиологическая телеметрия](./)
 
 ---
 
@@ -50,8 +50,8 @@ HRV RMSSD (вариабельность сердечного ритма, сре�
 
 *(Все биомаркеры категории «Физиологическая телеметрия»)*
 
-- [[02 - Biomarkers/13 - Telemetry/Systolic Blood Pressure\|Артериальное давление]] (`systolicBloodPressure`)
-- [[02 - Biomarkers/13 - Telemetry/Resting Heart Rate\|Пульс покоя]] (`restingHeartRate`)
+- [Артериальное давление](Systolic%20Blood%20Pressure.md) (`systolicBloodPressure`)
+- [Пульс покоя](Resting%20Heart%20Rate.md) (`restingHeartRate`)
 
 ---
 
@@ -59,9 +59,9 @@ HRV RMSSD (вариабельность сердечного ритма, сре�
 
 | Вещество | Эффект | Дельта/тик |
 |---------|--------|-----------|
-| [[03 - Substances/Omega-3\|Омега-3 жирные кислоты]] | ↑ | +0.00020 |
-| [[03 - Substances/Magnesium\|Магний]] | ↑ | +0.00030 |
-| [[03 - Substances/NMN\|НМН (никотинамид мононуклеотид)]] | ↑ | +0.00030 |
+| [Омега-3 жирные кислоты](../../03%20-%20Substances/Omega-3.md) | ↑ | +0.00020 |
+| [Магний](../../03%20-%20Substances/Magnesium.md) | ↑ | +0.00030 |
+| [НМН (никотинамид мононуклеотид)](../../03%20-%20Substances/NMN.md) | ↑ | +0.00030 |
 
 > *Дельты при 100% концентрации за 1 тик. Источник: substances.json (Phase 4)*
 

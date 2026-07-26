@@ -15,7 +15,7 @@ tags: [biomarker, mvp, telemetry]
 
 # Артериальное давление (`systolicBloodPressure`)
 
-> **Единицы:** mmHg | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/13 - Telemetry/\|Физиологическая телеметрия]]
+> **Единицы:** mmHg | **Статус:** Clinical | **Категория:** [Физиологическая телеметрия](./)
 
 ---
 
@@ -50,8 +50,8 @@ tags: [biomarker, mvp, telemetry]
 
 *(Все биомаркеры категории «Физиологическая телеметрия»)*
 
-- [[02 - Biomarkers/13 - Telemetry/Resting Heart Rate\|Пульс покоя]] (`restingHeartRate`)
-- [[02 - Biomarkers/13 - Telemetry/HRV RMSSD\|HRV (RMSSD)]] (`hrvRmssd`)
+- [Пульс покоя](Resting%20Heart%20Rate.md) (`restingHeartRate`)
+- [HRV (RMSSD)](HRV%20RMSSD.md) (`hrvRmssd`)
 
 ---
 
@@ -59,7 +59,7 @@ tags: [biomarker, mvp, telemetry]
 
 | Вещество | Эффект | Дельта/тик |
 |---------|--------|-----------|
-| [[03 - Substances/Magnesium\|Магний]] | ↓ | -0.02000 |
+| [Магний](../../03%20-%20Substances/Magnesium.md) | ↓ | -0.02000 |
 
 > *Дельты при 100% концентрации за 1 тик. Источник: substances.json (Phase 4)*
 

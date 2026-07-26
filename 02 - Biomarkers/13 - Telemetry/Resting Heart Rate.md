@@ -15,7 +15,7 @@ tags: [biomarker, mvp, telemetry]
 
 # Пульс покоя (`restingHeartRate`)
 
-> **Единицы:** bpm | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/13 - Telemetry/\|Физиологическая телеметрия]]
+> **Единицы:** bpm | **Статус:** Clinical | **Категория:** [Физиологическая телеметрия](./)
 
 ---
 
@@ -50,8 +50,8 @@ tags: [biomarker, mvp, telemetry]
 
 *(Все биомаркеры категории «Физиологическая телеметрия»)*
 
-- [[02 - Biomarkers/13 - Telemetry/Systolic Blood Pressure\|Артериальное давление]] (`systolicBloodPressure`)
-- [[02 - Biomarkers/13 - Telemetry/HRV RMSSD\|HRV (RMSSD)]] (`hrvRmssd`)
+- [Артериальное давление](Systolic%20Blood%20Pressure.md) (`systolicBloodPressure`)
+- [HRV (RMSSD)](HRV%20RMSSD.md) (`hrvRmssd`)
 
 ---
 

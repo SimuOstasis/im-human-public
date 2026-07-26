@@ -15,7 +15,7 @@ tags: [biomarker, mvp, lipids]
 
 # Аполипопротеин B (`apoB`)
 
-> **Единицы:** g/L | **Статус:** Extended | **Категория:** [[02 - Biomarkers/01 - Lipids/\|Липиды]]
+> **Единицы:** g/L | **Статус:** Extended | **Категория:** [Липиды](./)
 
 ---
 
@@ -50,9 +50,9 @@ tags: [biomarker, mvp, lipids]
 
 *(Все биомаркеры категории «Липиды»)*
 
-- [[02 - Biomarkers/01 - Lipids/LDL Cholesterol\|Холестерин ЛПНП]] (`ldlC`)
-- [[02 - Biomarkers/01 - Lipids/HDL Cholesterol\|Холестерин ЛПВП]] (`hdlC`)
-- [[02 - Biomarkers/01 - Lipids/Triglycerides\|Триглицериды]] (`triglycerides`)
+- [Холестерин ЛПНП](LDL%20Cholesterol.md) (`ldlC`)
+- [Холестерин ЛПВП](HDL%20Cholesterol.md) (`hdlC`)
+- [Триглицериды](Triglycerides.md) (`triglycerides`)
 
 ---
 

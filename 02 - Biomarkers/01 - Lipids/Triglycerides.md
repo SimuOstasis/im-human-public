@@ -15,7 +15,7 @@ tags: [biomarker, mvp, lipids]
 
 # Триглицериды (`triglycerides`)
 
-> **Единицы:** mmol/L | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/01 - Lipids/\|Липиды]]
+> **Единицы:** mmol/L | **Статус:** Clinical | **Категория:** [Липиды](./)
 
 ---
 
@@ -50,9 +50,9 @@ tags: [biomarker, mvp, lipids]
 
 *(Все биомаркеры категории «Липиды»)*
 
-- [[02 - Biomarkers/01 - Lipids/LDL Cholesterol\|Холестерин ЛПНП]] (`ldlC`)
-- [[02 - Biomarkers/01 - Lipids/HDL Cholesterol\|Холестерин ЛПВП]] (`hdlC`)
-- [[02 - Biomarkers/01 - Lipids/Apolipoprotein B\|Аполипопротеин B]] (`apoB`)
+- [Холестерин ЛПНП](LDL%20Cholesterol.md) (`ldlC`)
+- [Холестерин ЛПВП](HDL%20Cholesterol.md) (`hdlC`)
+- [Аполипопротеин B](Apolipoprotein%20B.md) (`apoB`)
 
 ---
 
@@ -60,9 +60,9 @@ tags: [biomarker, mvp, lipids]
 
 | Вещество | Эффект | Дельта/тик |
 |---------|--------|-----------|
-| [[03 - Substances/Omega-3\|Омега-3 жирные кислоты]] | ↓ | -0.00500 |
-| [[03 - Substances/Berberine\|Берберин]] | ↓ | -0.00400 |
-| [[03 - Substances/Rapamycin\|Рапамицин]] | ↑ | +0.00200 |
+| [Омега-3 жирные кислоты](../../03%20-%20Substances/Omega-3.md) | ↓ | -0.00500 |
+| [Берберин](../../03%20-%20Substances/Berberine.md) | ↓ | -0.00400 |
+| [Рапамицин](../../03%20-%20Substances/Rapamycin.md) | ↑ | +0.00200 |
 
 > *Дельты при 100% концентрации за 1 тик. Источник: substances.json (Phase 4)*
 

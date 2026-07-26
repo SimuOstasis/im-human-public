@@ -15,7 +15,7 @@ tags: [biomarker, mvp, liver]
 
 # Альбумин (`albumin`)
 
-> **Единицы:** g/L | **Статус:** Clinical | **Категория:** [[02 - Biomarkers/04 - Liver/\|Функция печени]]
+> **Единицы:** g/L | **Статус:** Clinical | **Категория:** [Функция печени](./)
 
 ---
 
@@ -50,9 +50,9 @@ tags: [biomarker, mvp, liver]
 
 *(Все биомаркеры категории «Функция печени»)*
 
-- [[02 - Biomarkers/04 - Liver/ALT\|АЛТ]] (`alt`)
-- [[02 - Biomarkers/04 - Liver/AST\|АСТ]] (`ast`)
-- [[02 - Biomarkers/04 - Liver/GGT\|ГГТ]] (`ggt`)
+- [АЛТ](ALT.md) (`alt`)
+- [АСТ](AST.md) (`ast`)
+- [ГГТ](GGT.md) (`ggt`)
 
 ---
 

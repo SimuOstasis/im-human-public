@@ -103,7 +103,7 @@ threshold = 0.1 × 2.0 = 0.2
 
 ## Ссылки
 
-- [[06 - Engine/Pharmacokinetics Model]] — концентрации веществ (c_a, c_b, Cmax), используемые в формулах
-- [[03 - Substances/Omega-3]] — пример effectProfile для синергетических расчётов
-- [[03 - Substances/Rapamycin]] — пример вещества с записью самотоксичности в interactions.json
-- [[06 - Engine/Event Detector]] — генерация CRITICAL событий при токсическом превышении
+- [Pharmacokinetics Model](Pharmacokinetics%20Model.md) — концентрации веществ (c_a, c_b, Cmax), используемые в формулах
+- [Omega-3](../03%20-%20Substances/Omega-3.md) — пример effectProfile для синергетических расчётов
+- [Rapamycin](../03%20-%20Substances/Rapamycin.md) — пример вещества с записью самотоксичности в interactions.json
+- [Event Detector](Event%20Detector.md) — генерация CRITICAL событий при токсическом превышении
