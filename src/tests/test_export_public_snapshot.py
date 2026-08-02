@@ -108,6 +108,35 @@ def test_mirror_includes_ordinary_and_excludes_planning_claude_agents(tmp_path):
     assert counts["excluded"] == 4
 
 
+def test_mirror_handles_non_ascii_filenames_under_planning(tmp_path):
+    """Live incident regression (v2.1 close, publish-public.yml run): a
+    Cyrillic filename under `.planning/` made git's default
+    `core.quotepath=true` C-quote-and-octal-escape the path in plain
+    `git ls-files` output, both mismangling the returned string (breaking
+    `shutil.copy2`) and defeating `is_excluded()`'s literal `.planning/`
+    prefix check (a quoted path starts with `"`, not `.`), letting an
+    excluded path slip into `included` and crash `mirror()` with
+    FileNotFoundError. `enumerate_tracked_files()` must return the raw,
+    unquoted path regardless of `core.quotepath`."""
+    m = _load_export_public_snapshot()
+    source = tmp_path / "source"
+    dest = tmp_path / "dest"
+    source.mkdir()
+
+    (source / "README.md").write_text("hello", encoding="utf-8")
+    (source / ".planning").mkdir()
+    non_ascii = source / ".planning" / "11-SECURITY — копия.md"
+    non_ascii.write_text("stray duplicate", encoding="utf-8")
+    _git_track_all(source)
+
+    counts = m.mirror(source, dest)
+
+    assert (dest / "README.md").exists()
+    assert not (dest / ".planning").exists()
+    assert counts["included"] == 1
+    assert counts["excluded"] == 1
+
+
 def test_mirror_deletes_stale_dest_orphans(tmp_path):
     """mirror() is a sync, not an additive copy — stale dest files must go."""
     m = _load_export_public_snapshot()

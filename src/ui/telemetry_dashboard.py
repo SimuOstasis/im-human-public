@@ -12,8 +12,13 @@
   - apply_ranges(profile) обновляет зоны при смене профиля (не каждый тик)
   - update(biomarker_values) аппендит в deque и вызывает curve.setData
 
-Decisions: D-03 (deque maxlen=5000), D-11 (4×6 GridLayout), D-13 (LinearRegionItem)
-Requirements: UI-05 (24 графика), UI-10 (даунсэмплинг ≤5000 точек)
+Decisions: D-03 (deque maxlen=5000), D-11 (4×6 GridLayout), D-13 (LinearRegionItem);
+  Phase 17: D-01 (viewport-culling запас ±2 строки сетки), D-02 (критерий видимости по
+  scrollbar+viewport геометрии, дешевле построчного per-widget region-запроса), D-03
+  (Phase 17 — безусловное накопление в deque независимо от видимости, не путать с D-03
+  Phase 6 выше), D-04 (однократный полный догон setData() при возврате плота в видимую
+  область)
+Requirements: UI-05 (24 графика), UI-10 (даунсэмплинг ≤5000 точек), PERF-01 (viewport-culling)
 """
 from __future__ import annotations
 
@@ -319,6 +324,7 @@ class TelemetryDashboard(QWidget):
         self._curves: dict[str, pg.PlotDataItem] = {}
         self._buffers: dict[str, collections.deque] = {}
         self._regions: dict[str, list] = {}  # список LinearRegionItem per code
+        self._plot_row: dict[str, int] = {}  # код биомаркера → номер строки сетки (PERF-01)
 
         # ── Компоновка: QVBoxLayout → QScrollArea → inner QWidget + QGridLayout ──
         outer_layout = QVBoxLayout(self)
@@ -332,9 +338,9 @@ class TelemetryDashboard(QWidget):
         inner_widget = QWidget()
         self._scroll.setWidget(inner_widget)
 
-        grid = QGridLayout(inner_widget)
-        grid.setContentsMargins(4, 4, 4, 4)
-        grid.setSpacing(4)
+        self._grid = QGridLayout(inner_widget)
+        self._grid.setContentsMargins(4, 4, 4, 4)
+        self._grid.setSpacing(4)
 
         # ── Создать 24 мини-плота (4 колонки × 6 строк) ──────────────────────
         tick_font = QFont("Segoe UI", 10)
@@ -383,14 +389,45 @@ class TelemetryDashboard(QWidget):
             self._curves[code] = curve
             self._buffers[code] = buf
             self._regions[code] = []
+            self._plot_row[code] = row
 
-            grid.addWidget(plot, row, col)
+            self._grid.addWidget(plot, row, col)
 
         # Растянуть все 4 колонки и 6 строк равномерно (UI-SPEC.md §Grid layout)
-        for c in range(4):
-            grid.setColumnStretch(c, 1)
-        for r in range(6):
-            grid.setRowStretch(r, 1)
+        # WR-07 (17-REVIEW.md): границы циклов вычисляются из данных
+        # (self._biomarkers), а не хардкодятся как 4×6 — иначе при изменении
+        # состава biomarkers.json сетка растяжки молча разъедется с реальной
+        # (уже частично заполненной/неполной) геткой виджетов.
+        n_cols = 4
+        n_rows = -(-len(self._biomarkers) // n_cols) if self._biomarkers else 0
+        for c in range(n_cols):
+            self._grid.setColumnStretch(c, 1)
+        for r in range(n_rows):
+            self._grid.setRowStretch(r, 1)
+
+        # CR-01 (17-REVIEW.md): D-04 «однократный полный догон setData() при
+        # возврате плота в видимую область» ранее происходил только как побочный
+        # эффект следующего update() — плот, прокрученный в видимую область во
+        # время паузы/останова симуляции (когда update() больше не вызывается),
+        # оставался пустым навсегда, несмотря на полную историю в self._buffers.
+        # Подписка на valueChanged скроллбара пересчитывает видимость и
+        # перерисовывает попавшие в неё плоты независимо от прихода нового тика.
+        self._scroll.verticalScrollBar().valueChanged.connect(self._on_scrolled)
+
+    def _on_scrolled(self, _value: int) -> None:
+        """Догоняющая перерисовка плотов, попавших в видимую область при скролле
+        без нового тика симуляции (CR-01/D-04, 17-REVIEW.md).
+
+        Не трогает self._buffers (данные уже накоплены безусловно — D-03) —
+        только пересчитывает срез для newly-visible плотов и вызывает setData(),
+        зеркаля срез, который делает update() (последние ≤300 точек).
+        """
+        first_row, last_row = self._visible_row_range()
+        for code, row in self._plot_row.items():
+            if first_row <= row <= last_row:
+                buf = self._buffers[code]
+                display = list(itertools.islice(buf, max(0, len(buf) - 300), len(buf)))
+                self._curves[code].setData(display)
 
     # ─────────────────────────────────────────────────────────────────────────
     # Публичный API
@@ -489,6 +526,49 @@ class TelemetryDashboard(QWidget):
 
             self._regions[code] = new_regions
 
+    def _visible_row_range(self) -> tuple[int, int]:
+        """Буферизованный диапазон видимых строк сетки (D-01: запас ±2 строки).
+
+        Критерий видимости — по позиции скроллбара и высоте viewport `QScrollArea`
+        (D-02), а не через попиксельный region-запрос у каждого виджета: последнее
+        дорого пересчитывать для 24 плотов на каждый вызов `update()`. Высоты строк
+        НИГДЕ не кэшируются —
+        `rowCount()` и геометрия каждой строки перечитываются заново на каждом вызове,
+        потому что `setRowStretch` растягивает и слегка разравнивает строки неодинаково,
+        когда окно выше содержимого (17-RESEARCH.md Pitfall 2); закэшированная высота
+        стала бы неверной сразу после такого resize.
+
+        Returns:
+            (first_row, last_row) — индексы первой и последней буферизованной строки,
+            либо полный диапазон `(0, rowCount() - 1)`, если ни одна строка ещё не
+            имеет валидной геометрии (виджет не был показан).
+        """
+        scroll_y = self._scroll.verticalScrollBar().value()
+        viewport_h = self._scroll.viewport().height()
+        visible_top, visible_bottom = scroll_y, scroll_y + viewport_h
+
+        row_count = self._grid.rowCount()
+        last_row_index = row_count - 1
+
+        first_row: int | None = None
+        last_row: int | None = None
+        for row in range(row_count):
+            item = self._grid.itemAtPosition(row, 0)
+            if item is None:
+                continue
+            w = item.widget()
+            row_top, row_bottom = w.y(), w.y() + w.height()
+            if row_bottom > visible_top and row_top < visible_bottom:
+                if first_row is None:
+                    first_row = row
+                last_row = row
+
+        if first_row is None:
+            # Ничего не видно (виджет ещё не показан, нулевая геометрия) —
+            # деградировать в прежнее поведение (все строки), а не отсекать всё.
+            return (0, last_row_index)
+        return (max(0, first_row - 2), min(last_row_index, last_row + 2))
+
     def update(self, biomarker_values: dict[str, float]) -> None:
         """Добавить новые значения биомаркеров в буферы и обновить кривые.
 
@@ -499,10 +579,19 @@ class TelemetryDashboard(QWidget):
             biomarker_values: dict с ключами = camelCase коды биомаркеров (из SimulationState).
                               Пример: {"ldlC": 2.4, "hdlC": 1.5, ...}
         """
+        first_row, last_row = self._visible_row_range()
+
         for code, buf in self._buffers.items():
             # T-06-09: проверить наличие кода перед доступом (безопасность от отсутствующих полей)
             if code in biomarker_values:
-                buf.append(biomarker_values[code])
+                buf.append(biomarker_values[code])  # D-03: безусловно, вне гейта видимости
+
+                # PERF-01 (D-01/D-03/D-04): плоты вне буферизованного диапазона строк
+                # пропускают и срез, и перерисовку — данные продолжают копиться в deque
+                # выше, ничего не теряется, просто не отрисовывается, пока плот не виден.
+                if not (first_row <= self._plot_row[code] <= last_row):
+                    continue
+
                 # Display last 300 points max — deque keeps 5000 for data accuracy.
                 # Rendering 5000×24 points per frame freezes pyqtgraph on software renderer.
                 # D-02: срез через itertools.islice — не материализует весь deque
@@ -528,6 +617,13 @@ class TelemetryDashboard(QWidget):
             (ok, total, errors) — ok = число успешно экспортированных файлов,
             total = len(self._plots), errors = список кодов биомаркеров с ошибкой.
         """
+        if fmt not in ("PNG", "SVG"):
+            # WR-01 (17-REVIEW.md): без валидации любой другой fmt молча
+            # получал SVGExporter, но файл писался с расширением fmt.lower()
+            # (например .pdf с SVG-содержимым внутри) — публичный метод без
+            # защиты инварианта, которым сейчас пользуется только UI-диалог.
+            raise ValueError(f"Unsupported export format: {fmt!r} (expected 'PNG' or 'SVG')")
+
         if fmt == "SVG":
             _patch_pyqtgraph_svg_exporter_bug()
 

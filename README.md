@@ -2,7 +2,7 @@
 
 ## License
 
-This work is licensed under the Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt) for the full text.
+This work is licensed under the Apache License, Version 2.0. See [LICENSE.txt](https://github.com/SimuOstasis/im-human-public/blob/master/LICENSE.txt) for the full text.
 
 Copyright © 2026 Vladimir Bazhin. Contact: info@simuostasis.com
 
@@ -115,7 +115,7 @@ flowchart TB
 | Валидация | Pydantic v2 | Типобезопасные модели данных (HumanProfile, SimulationState) |
 | Вики | Obsidian (Markdown) | База знаний о биомаркерах, веществах, движке |
 | Граф/Векторная база | Neo4j | Граф связей + семантический поиск (384d эмбеддинги) |
-| Тесты | pytest | 17 тест-файлов, 195 тестов |
+| Тесты | pytest | 18 тест-файлов, 205 тестов |
 
 ### Хранение данных (DUAL-LAYER, ADR-002)
 
@@ -222,6 +222,57 @@ flowchart TD
    pip install -r requirements.txt
    ```
 
+### Активация локального pre-push гейта
+
+Команда активации (один раз на клоне):
+
+```powershell
+venv\Scripts\python.exe tools/install_hooks.py
+```
+
+Команда устанавливает `git config core.hooksPath .githooks` на этой машине. Проверить, что
+активация уже выполнена, ничего не меняя:
+
+```powershell
+venv\Scripts\python.exe tools/install_hooks.py --check
+```
+
+Что делает гейт: перед `git push` он запускает тест-сьют проекта (`pytest src/tests`) и прерывает
+отправку, если тесты красные.
+
+**Границы механизма.** Это локальный механизм на машине разработчика, а не проверка на стороне
+GitHub:
+
+- он не действует, пока команда активации выше не выполнена на конкретном клоне — `git clone`
+  и `git pull` не переносят `core.hooksPath`;
+- отправка с флагом `git push --no-verify` проходит мимо гейта штатным образом;
+- слияние pull request на стороне GitHub этим механизмом не проверяется.
+
+Серверная проверка (required status checks в настройках ветки) недоступна для приватного
+репозитория на текущем тарифе GitHub — это осознанный выбор, а не недоделка.
+
+Шаг `pip-audit` в CI (`.github/workflows/ci.yml`) остаётся информативным и блокирующим не
+становится.
+
+### Первый запуск сервера Neo4j (опционально)
+
+Этот блок можно полностью пропустить — если база знаний не нужна, приложение запускается и
+работает без подключения к Neo4j (обращения к базе знаний перехватываются внутри
+`src/engine/kb_client.py` и просто возвращают пустой результат).
+
+Если база знаний нужна:
+
+1. Установить Neo4j Desktop с официального сайта [neo4j.com/download](https://neo4j.com/download)
+   (не использовать сторонние зеркала или прямые ссылки на бинарники).
+2. Создать локальный DBMS в Neo4j Desktop и задать пароль.
+3. Создать (или выбрать существующую) базу с именем, совпадающим со значением `NEO4J_DATABASE`
+   ниже (по умолчанию `Human`). Neo4j не допускает символ подчёркивания в именах баз данных —
+   использовать дефис, если требуется составное имя (например, `human-restore-test`, а не
+   `Human_restore_test`).
+4. Запустить DBMS и убедиться, что bolt-протокол слушает порт `7687`.
+
+Проверка подключения, загрузка вики и остальные клиентские скрипты — см. `.neo4j/README.md`.
+
 5. **Настроить подключение к Neo4j** (опционально, для базы знаний):
 
    ```powershell
@@ -256,7 +307,7 @@ python src/main.py
 
 ## Запуск тестов
 
-### Полный тест-сьют (195 тестов, 17 файлов)
+### Полный тест-сьют (205 тестов, 18 файлов)
 
 ```powershell
 venv\Scripts\python.exe -m pytest src/tests/ -v

@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# .githooks/pre-push — локальный гейт FND-06 (D-11): запускает pytest перед
+# отправкой ref в удалённый репозиторий и прерывает push, если тесты красные.
+#
+# Это ЛОКАЛЬНЫЙ гейт, а не гейт на стороне GitHub: он не действует, пока на
+# машине не выполнена активация `venv/Scripts/python.exe tools/install_hooks.py`
+# (git hooks не переносятся при клонировании), и владелец репозитория может
+# в любой момент отправить код мимо этого гейта штатным флагом git
+# `git push --no-verify`.
+#
+# Область срабатывания: гейт запускается на ЛЮБОЙ push непустых ref, а не
+# только на refs/heads/main. Причина (D-05, Claude's discretion): реальный
+# путь кода в main в этом репозитории — merge PR с ветки (прецедент PR #1,
+# STATE.md, текущая ветка fix/home-wikilinks), поэтому ограничение гейта
+# одной веткой main сделало бы его почти всегда неактивным.
+
+zero="0000000000000000000000000000000000000000"
+any_non_delete=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+    if [ -z "$local_ref" ]; then
+        continue
+    fi
+    if [ "$local_sha" != "$zero" ]; then
+        any_non_delete=1
+    fi
+done
+
+if [ "$any_non_delete" -eq 0 ]; then
+    # Все затронутые ref — удаления; тесты запускать незачем.
+    exit 0
+fi
+
+PY=""
+if [ -x "venv/Scripts/python.exe" ]; then
+    PY="venv/Scripts/python.exe"
+elif [ -x "venv/bin/python" ]; then
+    PY="venv/bin/python"
+elif command -v python3 >/dev/null 2>&1; then
+    PY="python3"
+elif command -v python >/dev/null 2>&1; then
+    PY="python"
+fi
+
+if [ -z "$PY" ]; then
+    echo "pre-push: не найден интерпретатор Python (venv/Scripts/python.exe, venv/bin/python, python3, python) — push прерван" >&2
+    exit 1
+fi
+
+"$PY" -m pytest src/tests -q
+status=$?
+
+if [ "$status" -ne 0 ]; then
+    echo "pre-push: push прерван — pytest завершился с кодом $status (красные тесты). Обход: git push --no-verify" >&2
+    exit "$status"
+fi
+
+exit 0

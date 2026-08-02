@@ -28,8 +28,8 @@ Copyright © 2026 Vladimir Bazhin. Contact: info@simuostasis.com
 | [04 · Взаимодействия](04%20-%20Interactions/) | Матрица взаимодействий | 1 |
 | [05 · Симуляции](05%20-%20Simulation/) | Сценарии и результаты | 1 |
 | [05 · UI Guide](05%20-%20Simulation/UI%20Guide.md) | Документация интерфейса (запуск, панели, скорости) | — |
-| [06 · Движок](06%20-%20Engine/) | Архитектура, формулы, цикл тика | 11 |
-| [07 · Анализ](07%20-%20Analysis/) | Синтез, допущения и планы развития | 6 |
+| [06 · Движок](06%20-%20Engine/) | Архитектура, формулы, цикл тика | 12 |
+| [07 · Анализ](07%20-%20Analysis/) | Синтез, допущения и планы развития | 7 |
 | [08 · Индексы](08%20-%20Index/) | Каталоги по категориям | — |
 | [08 · Индексы → Биомаркеры](08%20-%20Index/Biomarkers%20Index.md) | Индекс биомаркеров по категориям | 1 |
 | [04 · Взаимодействия → Индекс](04%20-%20Interactions/Interactions%20Index.md) | Матрица взаимодействий | 1 |
@@ -143,6 +143,7 @@ Copyright © 2026 Vladimir Bazhin. Contact: info@simuostasis.com
 - [User Guide](06%20-%20Engine/User%20Guide.md) — пошаговые инструкции для пользователя
 - [Neo4j Backup Restore](06%20-%20Engine/Neo4j%20Backup%20Restore.md) — neo4j-admin dump/load, восстановление в тестовую БД
 - [Pip Audit Dependency Scan](06%20-%20Engine/Pip%20Audit%20Dependency%20Scan.md) — разовая проверка requirements.txt на уязвимости, чистый результат
+- [UI Performance Benchmark](06%20-%20Engine/UI%20Performance%20Benchmark.md) — замер времени кадра UI дашборда в трёх конфигурациях рендера при высоких скоростях симуляции
 
 ---
 
@@ -151,6 +152,7 @@ Copyright © 2026 Vladimir Bazhin. Contact: info@simuostasis.com
 - [Simulation Assumptions](07%20-%20Analysis/Simulation%20Assumptions.md) — детерминизм, тик=1 час, линейные дельты
 - [Known Limitations](07%20-%20Analysis/Known%20Limitations.md) — ограничения модели, дисклеймер, roadmap v2+
 - [Legal Disclaimer Review](07%20-%20Analysis/Legal%20Disclaimer%20Review.md) — исследование практик формулировки дисклеймера (best-practices, НЕ юридическое заключение)
+- [Legal Checkpoint - Prescription Disclaimer](07%20-%20Analysis/Legal%20Checkpoint%20-%20Prescription%20Disclaimer.md) — внешний юридический checkpoint по дисклеймеру рецептурных препаратов, не блокирует релиз и НЕ является юридическим заключением
 - [Application Development Review_2026-06-28](07%20-%20Analysis/Application%20Development%20Review_2026-06-28.md) — комплексный технический и продуктовый review приложения
 - [Milestone v2.1. Development Plan_2026-07-10](07%20-%20Analysis/Milestone%20v2.1.%20Development%20Plan_2026-07-10.md) — GSD Phase 14–16: доверие, UX, воспроизводимость, UI-производительность
 - [Milestone v2.2. Development Plan_2026-07-11](07%20-%20Analysis/Milestone%20v2.2.%20Development%20Plan_2026-07-11.md) — GSD Phase 17–21: экспорт результатов, v2-механики, интеграция с mortality/agent

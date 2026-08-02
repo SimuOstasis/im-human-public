@@ -70,7 +70,12 @@ def _close_window(w) -> None:
     thread = getattr(w, "_thread", None)
     if thread is not None and thread.isRunning():
         thread.quit()
-        thread.wait(5000)
+        # WR-02 (17-REVIEW.md): не отбрасывать результат wait() — если
+        # завершение QThread когда-нибудь регрессирует, этот helper (finally
+        # почти каждого UI-теста в файле) должен упасть на месте, а не молча
+        # продолжить с живым потоком, который зомби-утечёт в следующие тесты.
+        stopped = thread.wait(5000)
+        assert stopped, "Worker QThread did not stop within 5s in test teardown (leak risk)"
 
     # 3. Закрыть окно (сохранить QSettings, вызвать super().closeEvent)
     w.close()
@@ -1506,3 +1511,238 @@ def test_help_dialog_shows_guide_and_disclaimer(app, monkeypatch):
         )
     finally:
         _close_window(w)
+
+
+# ── Тест 29: viewport-culling — setData только для видимых строк (PERF-01, Wave 0) ─
+
+def test_telemetry_culls_invisible_plots_setdata(app):
+    """update() вызывает setData() только для кодов из буферизованного диапазона строк (D-03).
+
+    RED (Wave 0): TelemetryDashboard пока не имеет ни `_plot_row`, ни
+    `_visible_row_range()` — эти атрибуты появятся в Plan 17-02.
+    """
+    from src.ui.telemetry_dashboard import TelemetryDashboard
+
+    dash = TelemetryDashboard()
+    try:
+        dash.resize(900, 200)
+        dash.show()
+        app.processEvents()
+
+        first, last = dash._visible_row_range()
+        last_row_index = dash._grid.rowCount() - 1
+        assert last < last_row_index, (
+            f"Предпосылка теста не достигнута: _visible_row_range()=({first}, {last}), "
+            f"последняя строка сетки={last_row_index} → ожидалось, что хотя бы одна строка "
+            f"будет отсечена маленьким viewport (D-01)"
+        )
+
+        dash.update({code: 1.0 for code in dash._buffers})
+
+        for code, row in dash._plot_row.items():
+            _x_data, y_data = dash._curves[code].getData()
+            if first <= row <= last:
+                assert y_data is not None and len(y_data) == 1, (
+                    f"Код '{code}' (строка {row}) внутри видимого диапазона [{first}, {last}], "
+                    f"наблюдалось y_data={y_data!r} → ожидался 1 элемент (D-03)"
+                )
+            else:
+                assert y_data is None or len(y_data) == 0, (
+                    f"Код '{code}' (строка {row}) вне видимого диапазона [{first}, {last}], "
+                    f"наблюдалось y_data={y_data!r} → ожидалось пусто/None (D-03)"
+                )
+
+        assert len(dash._buffers) == 24, (
+            f"Наблюдалось {len(dash._buffers)} буферов → ожидалось 24 (D-03)"
+        )
+        for code, buf in dash._buffers.items():
+            assert len(buf) == 1, (
+                f"Буфер '{code}' наблюдалось len={len(buf)} → ожидалось 1 (D-03 — данные "
+                f"копятся у ВСЕХ 24 кодов независимо от видимости)"
+            )
+    finally:
+        dash.close()
+        app.processEvents()
+
+
+# ── Тест 30: догон полным срезом при возврате плота в видимую область (PERF-01, Wave 0) ─
+
+def test_telemetry_catchup_render_on_scroll_return(app):
+    """Возврат отсечённого плота в видимую область даёт один полный catch-up setData() (D-04).
+
+    RED (Wave 0): требует `_plot_row`/`_visible_row_range()`, которых пока нет.
+    """
+    from src.ui.telemetry_dashboard import TelemetryDashboard
+
+    dash = TelemetryDashboard()
+    try:
+        dash.resize(900, 200)
+        dash.show()
+        app.processEvents()
+
+        first, last = dash._visible_row_range()
+        culled_codes = [
+            code for code, row in dash._plot_row.items() if not (first <= row <= last)
+        ]
+        assert culled_codes, (
+            f"Предпосылка теста не достигнута: ни один код не отсечён при диапазоне "
+            f"[{first}, {last}]"
+        )
+        target_code = culled_codes[0]
+
+        # WR-03 (17-REVIEW.md): >300 накопленных точек до возврата в видимую
+        # область — иначе assert ниже (`== buf_len`) не отличает "срез
+        # правильно закапан на 300" от "срез — сырой полный буфер", т.к. обе
+        # ветки дают одинаковый результат при buf_len < 300.
+        for i in range(400):
+            dash.update({target_code: float(i)})
+
+        _x_data, y_data = dash._curves[target_code].getData()
+        assert y_data is None or len(y_data) == 0, (
+            f"Код '{target_code}' вне видимого диапазона — наблюдалось y_data={y_data!r} "
+            f"→ ожидалось пусто/None до прокрутки (D-03)"
+        )
+
+        sb = dash._scroll.verticalScrollBar()
+        sb.setValue(sb.maximum())
+        app.processEvents()
+
+        new_first, new_last = dash._visible_row_range()
+        target_row = dash._plot_row[target_code]
+        assert new_first <= target_row <= new_last, (
+            f"После прокрутки в максимум строка '{target_code}' (строка {target_row}) "
+            f"наблюдалась вне нового диапазона [{new_first}, {new_last}] → ожидалось "
+            f"внутри диапазона (D-04)"
+        )
+
+        # CR-01 (17-REVIEW.md): проверяем именно скролл-БЕЗ-update() catch-up —
+        # раньше _on_scrolled не существовал, и полный срез появлялся только
+        # как побочный эффект следующего update(), что означало permanently
+        # blank plot при прокрутке во время паузы/останова симуляции.
+        buf_len = len(dash._buffers[target_code])
+        _x_data, y_data = dash._curves[target_code].getData()
+        assert y_data is not None and len(y_data) == min(buf_len, 300), (
+            f"Catch-up setData() для '{target_code}' СРАЗУ после прокрутки (без "
+            f"нового update()): наблюдалось "
+            f"len(y_data)={None if y_data is None else len(y_data)} → ожидалось "
+            f"min(len(buf), 300)={min(buf_len, 300)} (CR-01, D-04)"
+        )
+
+        dash.update({target_code: 99.0})
+
+        _x_data, y_data = dash._curves[target_code].getData()
+        buf_len = len(dash._buffers[target_code])
+        assert y_data is not None and len(y_data) == min(buf_len, 300), (
+            f"Catch-up setData() для '{target_code}': наблюдалось "
+            f"len(y_data)={None if y_data is None else len(y_data)} → ожидался срез, "
+            f"ограниченный min(len(buf), 300)={min(buf_len, 300)} — полный срез (капнутый "
+            f"на 300), а не одна последняя точка (D-04)"
+        )
+    finally:
+        dash.close()
+        app.processEvents()
+
+
+# ── Тест 31: _visible_row_range() устойчив к нерастянутым/растянутым строкам (PERF-01, Wave 0) ─
+
+def test_visible_row_range_after_resize(app):
+    """_visible_row_range() устойчив к растянутым неоднородным строкам сетки (Pitfall 2, D-01).
+
+    RED (Wave 0): требует `_grid`/`_visible_row_range()`, которых пока нет. Ни в одном
+    состоянии тест не опирается на захардкоженную высоту строки или номер отсечённой
+    строки — последний индекс строки выводится из `dash._grid.rowCount()`.
+    """
+    from src.ui.telemetry_dashboard import TelemetryDashboard
+
+    dash = TelemetryDashboard()
+    try:
+        dash.show()
+        last_row_index = dash._grid.rowCount() - 1
+
+        # (а) viewport выше содержимого — строки растягиваются: диапазон покрывает всё
+        dash.resize(900, 2000)
+        app.processEvents()
+        first_a, last_a = dash._visible_row_range()
+        assert 0 <= first_a <= last_a <= last_row_index, (
+            f"(а) наблюдалось диапазон=({first_a}, {last_a}) → инвариант клампинга "
+            f"0 <= first <= last <= {last_row_index} нарушен"
+        )
+        assert first_a == 0 and last_a == last_row_index, (
+            f"(а) viewport выше содержимого: наблюдалось диапазон=({first_a}, {last_a}) "
+            f"→ ожидалось покрытие всех строк (0, {last_row_index})"
+        )
+
+        # (б) маленький viewport, скролл в нуле — диапазон начинается с 0, не доходит до последней
+        dash.resize(900, 200)
+        app.processEvents()
+        dash._scroll.verticalScrollBar().setValue(0)
+        app.processEvents()
+        first_b, last_b = dash._visible_row_range()
+        assert 0 <= first_b <= last_b <= last_row_index, (
+            f"(б) наблюдалось диапазон=({first_b}, {last_b}) → инвариант клампинга нарушен"
+        )
+        assert first_b == 0 and last_b < last_row_index, (
+            f"(б) скролл в нуле, маленький viewport: наблюдалось диапазон=({first_b}, {last_b}) "
+            f"→ ожидалось start=0 и last < {last_row_index}"
+        )
+
+        # (в) прокрутка в максимум — диапазон заканчивается последней строкой, начинается > 0
+        sb = dash._scroll.verticalScrollBar()
+        sb.setValue(sb.maximum())
+        app.processEvents()
+        first_c, last_c = dash._visible_row_range()
+        assert 0 <= first_c <= last_c <= last_row_index, (
+            f"(в) наблюдалось диапазон=({first_c}, {last_c}) → инвариант клампинга нарушен"
+        )
+        assert last_c == last_row_index and first_c > 0, (
+            f"(в) прокрутка в максимум: наблюдалось диапазон=({first_c}, {last_c}) "
+            f"→ ожидалось last={last_row_index} и first > 0"
+        )
+    finally:
+        dash.close()
+        app.processEvents()
+
+
+# ── Тест 32: export_all()/reset() игнорируют viewport-culling (PERF-01, регрессионный замок) ─
+
+def test_export_and_reset_ignore_viewport_culling(app, tmp_path):
+    """export_all() и reset() обходят все 24 плота независимо от viewport-culling (PERF-01).
+
+    Регрессионный замок: этот тест зелёный ДО и ПОСЛЕ реализации PERF-01 — фиксирует,
+    что culling `setData()` не должен протекать в пакетный экспорт и сброс истории.
+    """
+    from src.ui.telemetry_dashboard import TelemetryDashboard
+
+    dash = TelemetryDashboard()
+    try:
+        dash.resize(900, 200)
+        dash.show()
+        app.processEvents()
+
+        dash.update({code: 1.0 for code in dash._buffers})
+
+        ok, total, errors = dash.export_all("PNG", tmp_path)
+        assert errors == [], f"Неожиданные ошибки экспорта: {errors} (PERF-01)"
+        assert ok == 24, (
+            f"Наблюдалось ok={ok} → ожидалось 24 (culling не должен влиять на export_all, PERF-01)"
+        )
+        assert total == 24, f"Наблюдалось total={total} → ожидалось 24 (PERF-01)"
+        png_files = list(tmp_path.glob("*.png"))
+        assert len(png_files) == 24, (
+            f"Наблюдалось {len(png_files)} .png файлов в tmp_path → ожидалось 24 (PERF-01)"
+        )
+
+        dash.reset()
+
+        for code, buf in dash._buffers.items():
+            assert len(buf) == 0, (
+                f"Буфер '{code}' наблюдалось len={len(buf)} → ожидалось 0 после reset() (PERF-01)"
+            )
+            _x_data, y_data = dash._curves[code].getData()
+            assert y_data is None or len(y_data) == 0, (
+                f"Кривая '{code}' наблюдалось y_data={y_data!r} → ожидалось пусто после "
+                f"reset() (PERF-01)"
+            )
+    finally:
+        dash.close()
+        app.processEvents()

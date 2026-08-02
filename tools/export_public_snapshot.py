@@ -58,15 +58,23 @@ def is_excluded(rel_posix_path: str) -> bool:
 
 def enumerate_tracked_files(source: Path) -> list[str]:
     """Enumerate SOURCE's tracked file set via `git ls-files` — the sole
-    trusted enumeration source (never a filesystem walk, per T-14-04-I)."""
+    trusted enumeration source (never a filesystem walk, per T-14-04-I).
+
+    Uses `-z` (NUL-separated, unquoted paths) rather than plain newline
+    output: git's default `core.quotepath=true` C-style-quotes and
+    octal-escapes any path containing non-ASCII bytes (e.g. Cyrillic
+    filenames), which would otherwise both mismangle the returned path
+    (breaking `shutil.copy2`) and defeat `is_excluded()`'s literal
+    `.planning/` prefix check (a quoted path starts with `"`, not `.`),
+    letting excluded paths slip through the mirror."""
     result = subprocess.run(
-        ["git", "ls-files"],
+        ["git", "ls-files", "-z"],
         cwd=str(source),
         capture_output=True,
         text=True,
         check=True,
     )
-    return [line for line in result.stdout.splitlines() if line.strip()]
+    return [p for p in result.stdout.split("\0") if p]
 
 
 def gather_existing_dest_files(dest: Path) -> list[str]:
