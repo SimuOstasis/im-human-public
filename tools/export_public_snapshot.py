@@ -66,15 +66,21 @@ def enumerate_tracked_files(source: Path) -> list[str]:
     filenames), which would otherwise both mismangle the returned path
     (breaking `shutil.copy2`) and defeat `is_excluded()`'s literal
     `.planning/` prefix check (a quoted path starts with `"`, not `.`),
-    letting excluded paths slip through the mirror."""
+    letting excluded paths slip through the mirror.
+
+    Decodes stdout as bytes and explicitly as UTF-8 rather than
+    `text=True` (which decodes using `locale.getpreferredencoding()` —
+    cp1252 on the Windows GitHub Actions runner this project's CI uses,
+    per README's `windows-latest` pin). cp1252 cannot decode arbitrary
+    UTF-8 path bytes and silently produced `stdout=None` in CI, crashing
+    this function with an AttributeError on `.split()`."""
     result = subprocess.run(
         ["git", "ls-files", "-z"],
         cwd=str(source),
         capture_output=True,
-        text=True,
         check=True,
     )
-    return [p for p in result.stdout.split("\0") if p]
+    return [p for p in result.stdout.decode("utf-8").split("\0") if p]
 
 
 def gather_existing_dest_files(dest: Path) -> list[str]:
